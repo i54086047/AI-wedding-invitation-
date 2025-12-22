@@ -170,5 +170,7 @@ def view_invite(invite_id: str):
     return send_file(p, mimetype="text/html; charset=utf-8")
 
 
+
+
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    app.run(host="0.0.0.0", port=10000)
