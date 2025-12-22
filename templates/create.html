@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>建立你的電子喜帖</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#0b0b0f;
+      --card: rgba(255,255,255,0.08);
+      --border: rgba(255,255,255,0.14);
+      --text: rgba(255,255,255,0.92);
+      --dim: rgba(255,255,255,0.70);
+      --accent:#c9a27d;
+      --accent-dark:#a07c56;
+      --radius: 18px;
+      --shadow: 0 10px 30px rgba(0,0,0,0.25);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:"Noto Sans TC", system-ui, -apple-system, sans-serif;
+      background: radial-gradient(circle at 15% 10%, rgba(201,162,125,0.12), transparent 45%),
+                  radial-gradient(circle at 80% 0%, rgba(255,255,255,0.06), transparent 40%),
+                  var(--bg);
+      color: var(--text);
+    }
+    .wrap{
+      width: min(980px, 100%);
+      margin: 0 auto;
+      padding: 28px 16px 64px;
+    }
+    .header{
+      display:flex;
+      gap:14px;
+      align-items:flex-start;
+      justify-content:space-between;
+      margin-bottom: 18px;
+    }
+    h1{
+      font-size: 22px;
+      margin:0;
+      letter-spacing: .02em;
+    }
+    .sub{
+      margin-top:8px;
+      color: var(--dim);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .card{
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px;
+      margin-top: 14px;
+      backdrop-filter: blur(10px);
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 760px){
+      .grid{ grid-template-columns: 1fr; }
+    }
+    label{
+      display:block;
+      font-size: 12px;
+      color: rgba(255,255,255,0.86);
+      margin: 0 0 6px;
+    }
+    input, textarea{
+      width:100%;
+      padding: 11px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(0,0,0,0.25);
+      color: var(--text);
+      outline: none;
+    }
+    textarea{ min-height: 86px; resize: vertical; }
+    input::placeholder, textarea::placeholder{ color: rgba(255,255,255,0.45); }
+
+    .hint{
+      margin-top: 6px;
+      color: rgba(255,255,255,0.55);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .section-title{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .section-title h2{
+      margin:0;
+      font-size: 15px;
+      letter-spacing:.02em;
+    }
+    .tag{
+      font-size: 12px;
+      color: rgba(255,255,255,0.75);
+      border: 1px solid rgba(255,255,255,0.14);
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+    }
+
+    .uploader{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 760px){
+      .uploader{ grid-template-columns: 1fr; }
+    }
+    .upload-box{
+      border: 1px dashed rgba(255,255,255,0.22);
+      border-radius: 14px;
+      padding: 12px;
+      background: rgba(0,0,0,0.18);
+    }
+    .upload-box .top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+    }
+    .upload-box .name{
+      font-weight: 600;
+      font-size: 13px;
+    }
+    .upload-box small{
+      display:block;
+      margin-top: 6px;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.5;
+    }
+
+    .actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap: 10px;
+      margin-top: 16px;
+      align-items:center;
+    }
+    .btn{
+      border:none;
+      cursor:pointer;
+      border-radius: 999px;
+      padding: 11px 16px;
+      font-size: 13px;
+      color: #fff;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      text-decoration:none;
+      user-select:none;
+      transition: transform .18s ease, background .18s ease, border-color .18s ease;
+      white-space: nowrap;
+    }
+    .btn-primary{
+      background: var(--accent);
+      box-shadow: var(--shadow);
+    }
+    .btn-primary:hover{ background: var(--accent-dark); transform: translateY(-1px); }
+    .btn-ghost{
+      background: rgba(255,255,255,0.10);
+      border: 1px solid rgba(255,255,255,0.18);
+    }
+    .btn-ghost:hover{ border-color: rgba(255,255,255,0.35); transform: translateY(-1px); }
+
+    .status{
+      margin-top: 10px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.75);
+    }
+    .error{ color: #ffb4b4; }
+    .ok{ color: #bfffd6; }
+
+    .divider{
+      height:1px;
+      background: rgba(255,255,255,0.10);
+      margin: 14px 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="header">
+      <div>
+        <h1>建立你的電子喜帖</h1>
+        <div class="sub">
+          填最必要的資訊 + 上傳 4 張背景照片，即可生成你那個「四頁翻頁」模板。<br/>
+          建議照片用橫式、解析度至少 1600px 寬（手機原圖通常 OK）。
+        </div>
+      </div>
+      <span class="tag">MVP 表單介面</span>
+    </div>
+
+    <form id="inviteForm" class="card" enctype="multipart/form-data">
+      <div class="section-title">
+        <h2>基本資訊</h2>
+        <span class="tag">必填</span>
+      </div>
+
+      <div class="grid">
+        <div>
+          <label for="couple_title">新人稱呼（標題）</label>
+          <input id="couple_title" name="couple_title" placeholder="例：Chun-Wei & Yerim" required />
+          <div class="hint">會出現在封面大標題。</div>
+        </div>
+
+        <div>
+          <label for="page_title">瀏覽器標題（title）</label>
+          <input id="page_title" name="page_title" placeholder="例：Chun-Wei & Yerim｜婚禮喜帖" required />
+        </div>
+
+        <div>
+          <label for="wedding_date_text">日期（顯示文字）</label>
+          <input id="wedding_date_text" name="wedding_date_text" placeholder="例：2027 / 01 / 16 (六)" required />
+        </div>
+
+        <div>
+          <label for="wedding_time_text">時間（顯示文字）</label>
+          <input id="wedding_time_text" name="wedding_time_text" placeholder="例：入場 18:00，儀式 18:30" required />
+        </div>
+
+        <div>
+          <label for="venue_name">地點名稱</label>
+          <input id="venue_name" name="venue_name" placeholder="例：首爾君悅酒店" required />
+        </div>
+
+        <div>
+          <label for="venue_address">地址</label>
+          <input id="venue_address" name="venue_address" placeholder="例：韓國 首爾特別市 ..." required />
+        </div>
+
+        <div>
+          <label for="map_url">Google Map 連結</label>
+          <input id="map_url" name="map_url" placeholder="貼 Google Maps 分享連結（或 search/?api=1...）" required />
+        </div>
+
+        <div>
+          <label for="rsvp_url">RSVP 表單連結</label>
+          <input id="rsvp_url" name="rsvp_url" placeholder="Google 表單連結 / 其他報名表" required />
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="section-title">
+        <h2>文案</h2>
+        <span class="tag">可先用預設值</span>
+      </div>
+
+      <div class="grid">
+        <div>
+          <label for="cover_subtitle">封面短句</label>
+          <textarea id="cover_subtitle" name="cover_subtitle" placeholder="例：誠摯邀請您，一起見證我們步入新的旅程。" required></textarea>
+        </div>
+
+        <div>
+          <label for="story_subtitle">故事頁副標</label>
+          <textarea id="story_subtitle" name="story_subtitle" placeholder="例：跨越台南與首爾的日常..." required></textarea>
+        </div>
+
+        <div>
+          <label for="story_p1">故事段落 1</label>
+          <textarea id="story_p1" name="story_p1" required></textarea>
+        </div>
+
+        <div>
+          <label for="story_p2">故事段落 2</label>
+          <textarea id="story_p2" name="story_p2" required></textarea>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="section-title">
+        <h2>當天流程（3 條）</h2>
+        <span class="tag">必填</span>
+      </div>
+
+      <div class="grid">
+        <div>
+          <label>流程 1 時間</label>
+          <input name="tl1_time" placeholder="例：18:00" required />
+        </div>
+        <div>
+          <label>流程 1 內容</label>
+          <input name="tl1_text" placeholder="例：賓客入場、簡單合照" required />
+        </div>
+
+        <div>
+          <label>流程 2 時間</label>
+          <input name="tl2_time" placeholder="例：18:30" required />
+        </div>
+        <div>
+          <label>流程 2 內容</label>
+          <input name="tl2_text" placeholder="例：證婚儀式開始" required />
+        </div>
+
+        <div>
+          <label>流程 3 時間</label>
+          <input name="tl3_time" placeholder="例：19:30" required />
+        </div>
+        <div>
+          <label>流程 3 內容</label>
+          <input name="tl3_text" placeholder="例：晚宴、致詞與互動時間" required />
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="section-title">
+        <h2>照片上傳（4 張）</h2>
+        <span class="tag">必填</span>
+      </div>
+
+      <div class="uploader">
+        <div class="upload-box">
+          <div class="top">
+            <div class="name">封面背景（01-cover）</div>
+          </div>
+          <input type="file" name="photo_cover" accept="image/*" required />
+          <small>建議橫式、人物置中。將套用在封面頁背景。</small>
+        </div>
+
+        <div class="upload-box">
+          <div class="top">
+            <div class="name">故事背景（02-story）</div>
+          </div>
+          <input type="file" name="photo_story" accept="image/*" required />
+          <small>將套用在 Our Story 那頁背景。</small>
+        </div>
+
+        <div class="upload-box">
+          <div class="top">
+            <div class="name">資訊背景（03-details）</div>
+          </div>
+          <input type="file" name="photo_details" accept="image/*" required />
+          <small>將套用在 Wedding Day 流程那頁背景。</small>
+        </div>
+
+        <div class="upload-box">
+          <div class="top">
+            <div class="name">RSVP 背景（04-rsvp）</div>
+          </div>
+          <input type="file" name="photo_rsvp" accept="image/*" required />
+          <small>將套用在 RSVP 那頁背景。</small>
+        </div>
+      </div>
+
+      <!-- 可選：如果你想讓 UI 更像你的模板，也可把這些文字固定死 -->
+      <input type="hidden" name="brand_title" value="C & Y Wedding" />
+      <input type="hidden" name="brand_sub" value="滑鼠滾輪一次切換一頁" />
+      <input type="hidden" name="rsvp_button_text" value="我要出席 RSVP" />
+
+      <input type="hidden" name="btn_view_details" value="查看婚禮資訊" />
+      <input type="hidden" name="btn_our_story" value="我們的故事" />
+      <input type="hidden" name="btn_next_details" value="下一頁：婚禮資訊" />
+      <input type="hidden" name="btn_back_cover" value="回到封面" />
+      <input type="hidden" name="story_title" value="我們的故事" />
+
+      <input type="hidden" name="details_title" value="Wedding Day" />
+      <input type="hidden" name="details_subtitle" value="當天流程與場地資訊" />
+      <input type="hidden" name="btn_open_map" value="在 Google 地圖中開啟" />
+      <input type="hidden" name="btn_next_rsvp" value="下一頁：RSVP" />
+      <input type="hidden" name="details_note" value="＊若想內嵌 Google Map，我也可以幫你加 iframe。" />
+
+      <input type="hidden" name="rsvp_title" value="RSVP 出席回覆" />
+      <input type="hidden" name="rsvp_subtitle" value="為了讓我們能好好準備座位與餐點，請花一點時間填寫出席回覆。" />
+      <input type="hidden" name="rsvp_step1" value="1) 點擊下方按鈕前往回覆表單（建議使用 Google 表單）。" />
+      <input type="hidden" name="rsvp_step2" value="2) 填寫您的姓名、人數與飲食需求。" />
+      <input type="hidden" name="rsvp_step3" value="3) 送出後，我們會在婚禮前再與您確認。" />
+      <input type="hidden" name="btn_open_rsvp" value="前往 RSVP 表單" />
+      <input type="hidden" name="rsvp_hint" value="＊若無法使用表單，也可以直接回覆這封電子喜帖的寄件人。" />
+
+      <div class="actions">
+        <button class="btn btn-primary" type="submit">生成喜帖</button>
+        <button class="btn btn-ghost" type="button" id="fillDemo">填入範例</button>
+      </div>
+
+      <div id="status" class="status"></div>
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById('inviteForm');
+    const statusEl = document.getElementById('status');
+    const fillDemoBtn = document.getElementById('fillDemo');
+
+    fillDemoBtn.addEventListener('click', () => {
+      form.page_title.value = 'Chun-Wei & Yerim｜婚禮喜帖';
+      form.couple_title.value = 'Chun-Wei & Yerim';
+      form.wedding_date_text.value = '2027 / 01 / 16 (六)';
+      form.wedding_time_text.value = '入場 18:00，儀式 18:30';
+      form.venue_name.value = '首爾君悅酒店';
+      form.venue_address.value = '韓國 首爾特別市 龍山區 蘇月路 322號（漢南洞）04347';
+      form.map_url.value = 'https://www.google.com/maps/search/?api=1&query=Grand%20Hyatt%20Seoul';
+      form.rsvp_url.value = 'https://docs.google.com/forms';
+
+      form.cover_subtitle.value = '誠摯邀請您，一起見證我們步入新的旅程。';
+      form.story_subtitle.value = '跨越台南與首爾的日常，慢慢疊起來，就變成了今天的我們。';
+      form.story_p1.value = '從一通訊息、一張機票開始，我們學會在不同的城市裡替彼此保留一個位置，期待著下一次重逢。';
+      form.story_p2.value = '現在，我們想邀請你／妳，一起來到這一天，見證我們把這段旅程，變成同一個「家」。';
+
+      form.tl1_time.value = '18:00';
+      form.tl1_text.value = '賓客入場、簡單合照';
+      form.tl2_time.value = '18:30';
+      form.tl2_text.value = '證婚儀式開始';
+      form.tl3_time.value = '19:30';
+      form.tl3_text.value = '晚宴、致詞與互動時間';
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      statusEl.textContent = '正在上傳與生成中…';
+      statusEl.className = 'status';
+
+      const fd = new FormData(form);
+
+      try{
+        // 後端做好後，這裡就會回一個 {url: "..."} 給你
+        const res = await fetch('/api/create', { method:'POST', body: fd });
+        if(!res.ok) throw new Error('伺服器回應失敗：' + res.status);
+        const data = await res.json();
+
+        statusEl.innerHTML = `✅ 已生成：<a href="${data.url}" target="_blank" style="color:inherit;text-decoration:underline">${data.url}</a>`;
+        statusEl.classList.add('ok');
+      }catch(err){
+        statusEl.textContent = '❌ 生成失敗：' + err.message;
+        statusEl.classList.add('error');
+      }
+    });
+  </script>
+</body>
+</html>
