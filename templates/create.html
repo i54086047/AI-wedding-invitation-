@@ -206,6 +206,53 @@
       </div>
       <span class="tag">MVP 表單介面</span>
     </div>
+    <div class="card" id="aiCard">
+  <div class="section-title">
+    <h2>AI 問答（幫你自動填表）</h2>
+    <span class="tag">可選</span>
+  </div>
+
+  <div class="sub" style="margin-top:0">
+    回答 3–5 題後，我會把內容自動填進下面表單（你仍可手動修改）。
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="grid">
+    <div style="grid-column: 1 / -1;">
+      <label for="ai_q1">Q1｜和我介紹你們的故事吧!請問是哪兩位新人要結婚？）</label>
+      <textarea id="ai_q1" placeholder="例：從一封訊息開始，後來變成一張又一張機票..."></textarea>
+    </div>
+
+    <div style="grid-column: 1 / -1;">
+      <label for="ai_q2">Q2｜你最喜歡對方的一件小事？（具體）</label>
+      <textarea id="ai_q2" placeholder="例：她每次都會記得我愛吃什麼..."></textarea>
+    </div>
+
+    <div style="grid-column: 1 / -1;">
+      <label for="ai_q3">Q3｜和我說說婚禮會怎麼進行~時間地點是最重要的!</label>
+      <textarea id="ai_q3" placeholder="例：希望大家感受到我們很認真把彼此當成家人..."></textarea>
+    </div>
+
+    <div>
+      <label for="ai_style">口吻（第一人稱）</label>
+      <input id="ai_style" placeholder="例：溫柔、幽默、像我平常打字那樣" />
+      <div class="hint">用來讓 AI 模仿你的語氣。</div>
+    </div>
+
+    <div>
+      <label for="ai_lang">語言</label>
+      <input id="ai_lang" value="繁體中文" />
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-primary" type="button" id="aiFillBtn">用 AI 產生文案並自動填入</button>
+    <button class="btn btn-ghost" type="button" id="aiClearBtn">清空問答</button>
+  </div>
+
+  <div id="aiStatus" class="status"></div>
+</div>
 
     <form id="inviteForm" class="card" enctype="multipart/form-data">
       <div class="section-title">
@@ -324,43 +371,33 @@
       <div class="divider"></div>
 
       <div class="section-title">
-        <h2>照片上傳（4 張）</h2>
-        <span class="tag">必填</span>
-      </div>
+  <h2>照片上傳（4 張）</h2>
+  <span class="tag">必填</span>
+</div>
 
-      <div class="uploader">
-        <div class="upload-box">
-          <div class="top">
-            <div class="name">封面背景（01-cover）</div>
-          </div>
-          <input type="file" name="photo_cover" accept="image/*" required />
-          <small>建議橫式、人物置中。將套用在封面頁背景。</small>
-        </div>
+<div class="uploader">
+  <div class="upload-box wide">
+    <div class="top">
+      <div class="name">上傳 4 張照片（依序套用）</div>
+    </div>
 
-        <div class="upload-box">
-          <div class="top">
-            <div class="name">故事背景（02-story）</div>
-          </div>
-          <input type="file" name="photo_story" accept="image/*" required />
-          <small>將套用在 Our Story 那頁背景。</small>
-        </div>
+    <input
+      type="file"
+      name="photos"
+      accept="image/*"
+      multiple
+      required
+    />
 
-        <div class="upload-box">
-          <div class="top">
-            <div class="name">資訊背景（03-details）</div>
-          </div>
-          <input type="file" name="photo_details" accept="image/*" required />
-          <small>將套用在 Wedding Day 流程那頁背景。</small>
-        </div>
+    <small>
+      請一次選取 <b>4 張照片</b>，將依序套用為：<br/>
+      ① 封面（Cover） → ② 故事（Story） → ③ 資訊（Details） → ④ RSVP
+      <br/>
+      建議橫式、主體置中。
+    </small>
+  </div>
+</div>
 
-        <div class="upload-box">
-          <div class="top">
-            <div class="name">RSVP 背景（04-rsvp）</div>
-          </div>
-          <input type="file" name="photo_rsvp" accept="image/*" required />
-          <small>將套用在 RSVP 那頁背景。</small>
-        </div>
-      </div>
 
       <!-- 可選：如果你想讓 UI 更像你的模板，也可把這些文字固定死 -->
       <input type="hidden" name="brand_title" value="C & Y Wedding" />
@@ -425,25 +462,116 @@
     });
 
     form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      statusEl.textContent = '正在上傳與生成中…';
-      statusEl.className = 'status';
+  e.preventDefault();
+  statusEl.textContent = '正在上傳與生成中…';
+  statusEl.className = 'status';
 
-      const fd = new FormData(form);
+  const fd = new FormData(form);
 
-      try{
-        // 後端做好後，這裡就會回一個 {url: "..."} 給你
-        const res = await fetch('/api/create', { method:'POST', body: fd });
-        if(!res.ok) throw new Error('伺服器回應失敗：' + res.status);
-        const data = await res.json();
+  try {
+    const res = await fetch('/api/create', { method: 'POST', body: fd });
 
-        statusEl.innerHTML = `✅ 已生成：<a href="${data.url}" target="_blank" style="color:inherit;text-decoration:underline">${data.url}</a>`;
-        statusEl.classList.add('ok');
-      }catch(err){
-        statusEl.textContent = '❌ 生成失敗：' + err.message;
-        statusEl.classList.add('error');
-      }
-    });
+    // ⭐先讀 text，避免不是 JSON 就炸
+    const text = await res.text();
+    console.log('status:', res.status);
+    console.log('response text:', text);
+
+    if (!res.ok) {
+      throw new Error(`伺服器回應失敗：${res.status}\n${text.slice(0, 200)}`);
+    }
+
+    // ⭐再嘗試把 text 轉 JSON
+    const data = JSON.parse(text);
+
+    statusEl.innerHTML = `✅ 已生成：<a href="${data.url}" target="_blank" style="color:inherit;text-decoration:underline">${data.url}</a>`;
+    statusEl.classList.add('ok');
+  } catch (err) {
+    statusEl.textContent = '❌ 生成失敗：' + err.message;
+    statusEl.classList.add('error');
+  }
+});
+
   </script>
+  <script>
+  const photoInput = document.querySelector('input[name="photos"]');
+
+  photoInput.addEventListener('change', () => {
+    if (photoInput.files.length !== 4) {
+      alert("請一次選取「剛好 4 張」照片，會依順序套用。");
+      photoInput.value = "";
+    }
+  });
+</script>
+<script>
+  const aiFillBtn = document.getElementById('aiFillBtn');
+  const aiClearBtn = document.getElementById('aiClearBtn');
+  const aiStatus = document.getElementById('aiStatus');
+
+  aiClearBtn.addEventListener('click', () => {
+    ['ai_q1','ai_q2','ai_q3','ai_style'].forEach(id => document.getElementById(id).value = '');
+    aiStatus.textContent = '';
+  });
+
+  aiFillBtn.addEventListener('click', async () => {
+    aiStatus.className = 'status';
+    aiStatus.textContent = 'AI 生成中…';
+
+    const answers = [
+      { q: '你們怎麼認識的？', a: document.getElementById('ai_q1').value.trim() },
+      { q: '你最喜歡對方的一件小事？', a: document.getElementById('ai_q2').value.trim() },
+      { q: '你希望賓客在這天感受到什麼？', a: document.getElementById('ai_q3').value.trim() },
+      { q: '口吻（第一人稱）', a: document.getElementById('ai_style').value.trim() },
+      { q: '語言', a: document.getElementById('ai_lang').value.trim() },
+    ].filter(x => x.a); // 空白就不送
+
+    const payload = { answers };
+
+    try{
+      const res = await fetch('/api/ai_prefill', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+      if(!res.ok || !data.ok) throw new Error(data.error || 'AI 失敗');
+
+      // ✅ 你後端回傳的是 { ok: true, data: {...} }
+      const fill = data.data;
+
+      const form = document.getElementById('inviteForm');
+      if (fill.cover_subtitle) form.cover_subtitle.value = fill.cover_subtitle;
+      if (fill.story_subtitle) form.story_subtitle.value = fill.story_subtitle;
+      if (fill.story_p1) form.story_p1.value = fill.story_p1;
+      if (fill.story_p2) form.story_p2.value = fill.story_p2;
+
+      // 如果你也想自動填基本欄位，可加這些（有值才覆蓋）
+      if (fill.page_title) form.page_title.value = fill.page_title;
+      if (fill.couple_title) form.couple_title.value = fill.couple_title;
+      if (fill.wedding_date_text) form.wedding_date_text.value = fill.wedding_date_text;
+      if (fill.wedding_time_text) form.wedding_time_text.value = fill.wedding_time_text;
+      if (fill.venue_name) form.venue_name.value = fill.venue_name;
+      if (fill.venue_address) form.venue_address.value = fill.venue_address;
+      if (fill.map_url) form.map_url.value = fill.map_url;
+      if (fill.rsvp_url) form.rsvp_url.value = fill.rsvp_url;
+
+      // timeline
+      if (fill.tl1_time) form.tl1_time.value = fill.tl1_time;
+      if (fill.tl1_text) form.tl1_text.value = fill.tl1_text;
+      if (fill.tl2_time) form.tl2_time.value = fill.tl2_time;
+      if (fill.tl2_text) form.tl2_text.value = fill.tl2_text;
+      if (fill.tl3_time) form.tl3_time.value = fill.tl3_time;
+      if (fill.tl3_text) form.tl3_text.value = fill.tl3_text;
+
+      aiStatus.textContent = '✅ 已填入表單，你可以再微調。';
+      aiStatus.classList.add('ok');
+    }catch(err){
+      aiStatus.textContent = '❌ ' + err.message;
+      aiStatus.classList.add('error');
+    }
+  });
+</script>
+
+
 </body>
 </html>

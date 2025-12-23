@@ -4,6 +4,16 @@ from pathlib import Path
 from flask import Flask, render_template, request, jsonify, url_for, abort
 from werkzeug.utils import secure_filename
 
+import json
+from openai import OpenAI
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+if not OPENAI_API_KEY:
+    raise RuntimeError("OPENAI_API_KEY is not set")
+
+client = OpenAI(api_key=OPENAI_API_KEY)
+
+client = OpenAI()  # 自動讀取 OPENAI_API_KEY
+
 app = Flask(__name__)
 
 # ====== 基本設定 ======
@@ -34,6 +44,117 @@ def _get_form_value(name: str, default: str = "", required: bool = False) -> str
 def home():
     # 直接導到建立頁
     return render_template("create.html")
+
+@app.post("/api/ai_prefill")
+def api_ai_prefill():
+    if not os.getenv("OPENAI_API_KEY"):
+        return jsonify({"ok": False, "error": "OPENAI_API_KEY not set"}), 500
+
+    payload = request.get_json(silent=True) or {}
+    answers = payload.get("answers")  # list of {q, a}
+    if not isinstance(answers, list) or len(answers) < 1:
+        return jsonify({"ok": False, "error": "answers required"}), 400
+
+    # 你表單/模板需要的欄位清單（最小版）
+    schema = {
+        "page_title": "string",
+        "couple_title": "string",
+        "cover_subtitle": "string",
+        "wedding_date_text": "string",
+        "wedding_time_text": "string",
+        "venue_name": "string",
+        "venue_address": "string",
+        "map_url": "string",
+        "rsvp_url": "string",
+        "story_subtitle": "string",
+        "story_p1": "string",
+        "story_p2": "string",
+        "tl1_time": "string",
+        "tl1_text": "string",
+        "tl2_time": "string",
+        "tl2_text": "string",
+        "tl3_time": "string",
+        "tl3_text": "string"
+    }
+
+    # 把問答整理成文字給模型
+    qa_text = "\n".join([f"Q{i+1}: {x.get('q','')}\nA{i+1}: {x.get('a','')}" for i, x in enumerate(answers)])
+
+    system = (
+        "You are helping draft a wedding invitation web page in Traditional Chinese (zh-Hant). "
+        "Write warm, natural, first-person copy that matches the user's writing vibe and tone. "
+
+        "STORY AND SENTIMENTAL CONTENT: "
+        "For story-related fields (story_subtitle, story_p1, story_p2), "
+        "write poetic but grounded prose in first-person voice. "
+        "Each story paragraph should be 5–6 complete sentences, "
+        "including concrete moments or imagery (e.g. a memory, distance, daily habits), "
+        "avoiding clichés or generic wedding phrases. "
+
+        "VENUE AND LOCATION HANDLING: "
+        "If the user provides a wedding venue name and/or city, "
+        "infer the most commonly recognized official address for that venue. "
+        "Generate a full postal-style address in Traditional Chinese if reasonably certain. "
+        "Also generate a Google Maps search URL using the venue name and address. "
+        "If the venue is ambiguous or the address cannot be confidently determined, "
+        "leave venue_address and map_url as empty strings. "
+        "Do not hallucinate or guess uncertain locations. "
+
+        "TIMELINE LOGIC: "
+        "If the user provides only a single starting time for the wedding, "
+        "assume the total duration is approximately 2 hours. "
+        "Automatically generate three reasonable timeline entries: "
+        "1) guest arrival, "
+        "2) ceremony start (approximately 30 minutes after arrival), "
+        "3) reception or main event (approximately 60–90 minutes after ceremony start). "
+        "All timeline times must follow HH:MM format and progress chronologically. "
+
+        "GENERAL RULES: "
+        "Do not invent RSVP URLs or private links. "
+        "If any required field cannot be confidently derived from the input, "
+        "output an empty string for that field instead of guessing. "
+        "Output must be valid JSON only, with exactly the requested keys."    
+    )
+
+    user = f"""
+Based on the Q/A below, produce a JSON object with exactly these keys (no extra keys):
+{json.dumps(list(schema.keys()), ensure_ascii=False)}
+
+Rules:
+- Output MUST be valid JSON only.
+- First-person voice for cover_subtitle, story_subtitle, story_p1, story_p2.
+- If a value is unknown from Q/A, output "" (empty string) instead of guessing.
+- page_title example format: "A & B｜婚禮喜帖"
+- couple_title example: "A & B"
+
+Q/A:
+{qa_text}
+""".strip()
+
+    try:
+        resp = client.responses.create(
+            model="gpt-4.1-mini",
+            input=[
+                {"role": "system", "content": system},
+                {"role": "user", "content": user},
+            ],
+            # 對 JSON 輸出更穩：讓模型只輸出 JSON
+            text={"format": {"type": "json_object"}}
+        )
+
+        data = json.loads(resp.output_text)
+
+        # 最基本校驗：補齊缺少 keys / 刪掉多餘 keys
+        out = {}
+        for k in schema.keys():
+            v = data.get(k, "")
+            out[k] = v if isinstance(v, str) else ""
+
+        return jsonify({"ok": True, "data": out})
+
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)}), 500
+
 
 @app.get("/create")
 def create_page():
@@ -99,10 +220,13 @@ def api_create():
         }
 
         # ====== 2) 讀取照片檔（4張）並驗證格式 ======
-        photo_cover = request.files.get("photo_cover")
-        photo_story = request.files.get("photo_story")
-        photo_details = request.files.get("photo_details")
-        photo_rsvp = request.files.get("photo_rsvp")
+        photos = request.files.getlist("photos")
+
+        if len(photos) != 4:
+            raise ValueError("請上傳 4 張照片")
+
+        photo_cover, photo_story, photo_details, photo_rsvp = photos
+
 
         ext1 = _validate_image(photo_cover, "photo_cover")
         ext2 = _validate_image(photo_story, "photo_story")
