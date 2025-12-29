@@ -930,99 +930,29 @@
       currentLang = lang;
       const t = i18n[lang];
 
-      document.getElementById('docTitle').textContent = t.docTitle;
-      document.title = t.docTitle;
-      document.getElementById('h1Title').textContent = t.h1;
-      document.getElementById('subTitle').innerHTML = t.sub;
-      document.getElementById('mvpTag').textContent = t.mvpTag;
+      // safe setter（避免抓不到元素就整支 script 爆掉）
+        const setText = (id, text) => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = text;
+        };
 
-      document.getElementById('qaTag').textContent = t.qaTag;
-      document.getElementById('qaTag2').textContent = t.qaTag;
-      document.getElementById('qaTag3').textContent = t.qaTag;
+        // buttons
+        setText('toQ2Btn', t.btnNext);
+        setText('toQ3Btn', t.btnNext);
+        setText('backToQ1Btn', t.btnPrev);
+        setText('backToQ2Btn', t.btnPrev);
 
-      document.getElementById('step1').textContent = t.step1;
-      document.getElementById('step2').textContent = t.step2;
-      document.getElementById('step3').textContent = t.step3;
+        setText('clearAllBtn1', t.btnClear);
+        setText('clearAllBtn2', t.btnClear);
+        setText('clearAllBtn3', t.btnClear);
 
-      document.getElementById('q1Label').textContent = t.q1;
-      document.getElementById('ai_q1').placeholder = t.q1ph;
-      document.getElementById('q1Hint').textContent = t.q1hint;
+        setText('genToFormBtn', t.btnGenToForm);
 
-      document.getElementById('q2Label').textContent = t.q2;
-      document.getElementById('ai_q2').placeholder = t.q2ph;
-      document.getElementById('q2Hint').textContent = t.q2hint;
+        // form buttons
+        setText('submitBtn', t.submitBtn);
+        setText('fillDemo', t.demoBtn);
+        setText('backToQ3FromForm', t.backToQA);
 
-      document.getElementById('q3Label').textContent = t.q3;
-      document.getElementById('ai_q3').placeholder = t.q3ph;
-
-      document.getElementById('styleLabel').textContent = t.styleLabel;
-      document.getElementById('ai_style').placeholder = t.stylePh;
-      document.getElementById('styleHint').textContent = t.styleHint;
-
-      // buttons
-      document.getElementById('toQ2Btn').textContent = t.btnNext;
-      document.getElementById('toQ3Btn').textContent = t.btnNext;
-      document.getElementById('backToQ1Btn').textContent = t.btnPrev;
-      document.getElementById('backToQ2Btn').textContent = t.btnPrev;
-      document.getElementById('backToQ2Btn').textContent = t.btnPrev;
-      document.getElementById('backToQ2Btn').textContent = t.btnPrev;
-      document.getElementById('backToQ2Btn').textContent = t.btnPrev;
-      document.getElementById('backToQ2Btn').textContent = t.btnPrev;
-      document.getElementById('backToQ2Btn').textContent = t.btnPrev;
-      document.getElementById('backToQ2Btn').textContent = t.btnPrev;
-      document.getElementById('backToQ2Btn').textContent = t.btnPrev;
-      document.getElementById('backToQ2Btn').textContent = t.btnPrev;
-
-      document.getElementById('backToQ1Btn').textContent = t.btnPrev;
-      document.getElementById('backToQ2Btn').textContent = t.btnPrev;
-      document.getElementById('backToQ3Btn').textContent = t.btnPrev;
-
-      document.getElementById('clearAllBtn1').textContent = t.btnClear;
-      document.getElementById('clearAllBtn2').textContent = t.btnClear;
-      document.getElementById('clearAllBtn3').textContent = t.btnClear;
-
-      document.getElementById('genToFormBtn').textContent = t.btnGenToForm;
-
-      // overlay
-      document.getElementById('genTitle').textContent = t.genTitle;
-      document.getElementById('genSub').textContent = t.genSub;
-
-      // form
-      document.getElementById('formTitle').textContent = t.formTitle;
-      document.getElementById('formTag').textContent = t.formTag;
-      document.getElementById('lblCoupleTitle').textContent = t.lblCoupleTitle;
-      document.getElementById('hintCoupleTitle').textContent = t.hintCoupleTitle;
-      document.getElementById('lblPageTitle').textContent = t.lblPageTitle;
-      document.getElementById('lblDate').textContent = t.lblDate;
-      document.getElementById('lblTime').textContent = t.lblTime;
-      document.getElementById('lblVenueName').textContent = t.lblVenueName;
-      document.getElementById('lblVenueAddr').textContent = t.lblVenueAddr;
-      document.getElementById('lblMap').textContent = t.lblMap;
-      document.getElementById('lblRsvp').textContent = t.lblRsvp;
-
-      document.getElementById('copyTitle').textContent = t.copyTitle;
-      document.getElementById('copyTag').textContent = t.copyTag;
-      document.getElementById('lblCoverSub').textContent = t.lblCoverSub;
-      document.getElementById('lblStorySub').textContent = t.lblStorySub;
-      document.getElementById('lblStoryP1').textContent = t.lblStoryP1;
-      document.getElementById('lblStoryP2').textContent = t.lblStoryP2;
-
-      document.getElementById('tlTitle').textContent = t.tlTitle;
-      document.getElementById('tlTag').textContent = t.tlTag;
-      document.getElementById('lblTl1Time').textContent = t.lblTl1Time;
-      document.getElementById('lblTl1Text').textContent = t.lblTl1Text;
-      document.getElementById('lblTl2Time').textContent = t.lblTl2Time;
-      document.getElementById('lblTl2Text').textContent = t.lblTl2Text;
-      document.getElementById('lblTl3Time').textContent = t.lblTl3Time;
-      document.getElementById('lblTl3Text').textContent = t.lblTl3Text;
-
-      document.getElementById('photoTitle').textContent = t.photoTitle;
-      document.getElementById('photoTag').textContent = t.photoTag;
-      document.getElementById('photoName').textContent = t.photoName;
-
-      document.getElementById('submitBtn').textContent = t.submitBtn;
-      document.getElementById('fillDemo').textContent = t.demoBtn;
-      document.getElementById('backToQ3FromForm').textContent = t.backToQA;
     }
 
     // language button event
@@ -1086,7 +1016,8 @@
     }
     document.getElementById('clearAllBtn1').addEventListener('click', clearAll);
     document.getElementById('clearAllBtn2').addEventListener('click', clearAll);
-    document.getElementById('clearAllBtn3').addEventListener('click', clearAll);
+    document.getElementById('backToQ3FromForm').addEventListener('click', () => showPage('q3'));
+
 
     function setQStatus(pageId, msg, ok=false){
       const el = document.getElementById(pageId);
