@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>建立你的電子喜帖</title>
+  <title id="docTitle">建立你的電子喜帖</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
 
@@ -23,22 +23,27 @@
     body{
       margin:0;
       font-family:"Noto Sans TC", system-ui, -apple-system, sans-serif;
-      background: radial-gradient(circle at 15% 10%, rgba(201,162,125,0.12), transparent 45%),
-                  radial-gradient(circle at 80% 0%, rgba(255,255,255,0.06), transparent 40%),
-                  var(--bg);
+      background:
+        radial-gradient(circle at 15% 10%, rgba(201,162,125,0.12), transparent 45%),
+        radial-gradient(circle at 80% 0%, rgba(255,255,255,0.06), transparent 40%),
+        var(--bg);
       color: var(--text);
+      min-height: 100vh;
     }
+    a{ color: inherit; }
     .wrap{
       width: min(980px, 100%);
       margin: 0 auto;
-      padding: 28px 16px 64px;
+      padding: 22px 16px 64px;
     }
+
+    /* Header */
     .header{
       display:flex;
       gap:14px;
       align-items:flex-start;
       justify-content:space-between;
-      margin-bottom: 18px;
+      margin-bottom: 14px;
     }
     h1{
       font-size: 22px;
@@ -51,6 +56,178 @@
       font-size: 13px;
       line-height: 1.6;
     }
+    .tag{
+      font-size: 12px;
+      color: rgba(255,255,255,0.75);
+      border: 1px solid rgba(255,255,255,0.14);
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      white-space: nowrap;
+    }
+
+    /* Language toggle (buttons, no dropdown) */
+    .langbar{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top: 10px;
+    }
+    .langbtn{
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.9);
+      padding: 8px 12px;
+      border-radius: 999px;
+      cursor:pointer;
+      font-size: 12px;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+      user-select:none;
+    }
+    .langbtn:hover{ transform: translateY(-1px); border-color: rgba(255,255,255,0.28); }
+    .langbtn.active{
+      background: rgba(201,162,125,0.18);
+      border-color: rgba(201,162,125,0.55);
+    }
+
+    /* Pages (4 pages: Q1/Q2/Q3/Form) */
+    .page{
+      display:none;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity .32s ease, transform .32s ease;
+    }
+    .page.active{
+      display:block;
+    }
+    .page.visible{
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Question page layout */
+    .qstage{
+      margin-top: 14px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      padding: 18px;
+      min-height: 520px;
+      display:flex;
+      flex-direction:column;
+    }
+    .qtop{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .step{
+      font-size: 12px;
+      color: rgba(255,255,255,0.75);
+      border: 1px solid rgba(255,255,255,0.14);
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      white-space: nowrap;
+    }
+    .qcenter{
+      flex:1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 18px 0 10px;
+    }
+    .qbox{
+      width: min(740px, 100%);
+      text-align:center;
+    }
+    .qlabel{
+      font-size: 18px;
+      line-height: 1.45;
+      letter-spacing: .01em;
+      margin: 0 0 12px;
+    }
+    textarea, input{
+      width:100%;
+      padding: 12px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(0,0,0,0.25);
+      color: var(--text);
+      outline: none;
+    }
+    textarea{
+      min-height: 160px;
+      resize: vertical;
+    }
+    input::placeholder, textarea::placeholder{ color: rgba(255,255,255,0.45); }
+
+    .hint{
+      margin-top: 10px;
+      color: rgba(255,255,255,0.60);
+      font-size: 12px;
+      line-height: 1.6;
+      text-align:left;
+    }
+
+    /* Actions */
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content: center;
+      margin-top: 8px;
+      padding-bottom: 6px;
+    }
+    .btn{
+      border:none;
+      cursor:pointer;
+      border-radius: 999px;
+      padding: 11px 16px;
+      font-size: 13px;
+      color: #fff;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      text-decoration:none;
+      user-select:none;
+      transition: transform .18s ease, background .18s ease, border-color .18s ease;
+      white-space: nowrap;
+    }
+    .btn-primary{
+      background: var(--accent);
+      box-shadow: var(--shadow);
+    }
+    .btn-primary:hover{ background: var(--accent-dark); transform: translateY(-1px); }
+    .btn-ghost{
+      background: rgba(255,255,255,0.10);
+      border: 1px solid rgba(255,255,255,0.18);
+    }
+    .btn-ghost:hover{ border-color: rgba(255,255,255,0.35); transform: translateY(-1px); }
+    .btn-danger{
+      background: rgba(255,120,120,0.18);
+      border: 1px solid rgba(255,120,120,0.35);
+    }
+    .btn-danger:hover{
+      background: rgba(255,120,120,0.26);
+      transform: translateY(-1px);
+    }
+
+    .status{
+      margin-top: 10px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.75);
+      text-align:center;
+      min-height: 18px;
+    }
+    .error{ color: #ffb4b4; }
+    .ok{ color: #bfffd6; }
+
+    /* Form page card */
     .card{
       background: var(--card);
       border: 1px solid var(--border);
@@ -67,30 +244,21 @@
     }
     @media (max-width: 760px){
       .grid{ grid-template-columns: 1fr; }
+      .qstage{ min-height: 520px; }
+      .qlabel{ font-size: 16px; }
+      textarea{ min-height: 170px; }
     }
     label{
       display:block;
       font-size: 12px;
       color: rgba(255,255,255,0.86);
       margin: 0 0 6px;
+      text-align:left;
     }
-    input, textarea, select{
-      width:100%;
-      padding: 11px 12px;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.16);
-      background: rgba(0,0,0,0.25);
-      color: var(--text);
-      outline: none;
-    }
-    textarea{ min-height: 86px; resize: vertical; }
-    input::placeholder, textarea::placeholder{ color: rgba(255,255,255,0.45); }
-
-    .hint{
-      margin-top: 6px;
-      color: rgba(255,255,255,0.55);
-      font-size: 12px;
-      line-height: 1.5;
+    .divider{
+      height:1px;
+      background: rgba(255,255,255,0.10);
+      margin: 14px 0;
     }
     .section-title{
       display:flex;
@@ -104,15 +272,8 @@
       font-size: 15px;
       letter-spacing:.02em;
     }
-    .tag{
-      font-size: 12px;
-      color: rgba(255,255,255,0.75);
-      border: 1px solid rgba(255,255,255,0.14);
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.06);
-    }
 
+    /* Uploader */
     .uploader{
       display:grid;
       grid-template-columns: 1fr 1fr;
@@ -144,180 +305,55 @@
       line-height: 1.5;
     }
 
-    .actions{
-      display:flex;
-      flex-wrap:wrap;
-      gap: 10px;
-      margin-top: 16px;
-      align-items:center;
-    }
-    .btn{
-      border:none;
-      cursor:pointer;
-      border-radius: 999px;
-      padding: 11px 16px;
-      font-size: 13px;
-      color: #fff;
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      text-decoration:none;
-      user-select:none;
-      transition: transform .18s ease, background .18s ease, border-color .18s ease, opacity .18s ease;
-      white-space: nowrap;
-    }
-    .btn:disabled{ opacity:.55; cursor:not-allowed; transform:none; }
-    .btn-primary{
-      background: var(--accent);
-      box-shadow: var(--shadow);
-    }
-    .btn-primary:hover{ background: var(--accent-dark); transform: translateY(-1px); }
-    .btn-ghost{
-      background: rgba(255,255,255,0.10);
-      border: 1px solid rgba(255,255,255,0.18);
-    }
-    .btn-ghost:hover{ border-color: rgba(255,255,255,0.35); transform: translateY(-1px); }
-
-    .status{
-      margin-top: 10px;
-      font-size: 12px;
-      color: rgba(255,255,255,0.75);
-    }
-    .error{ color: #ffb4b4; }
-    .ok{ color: #bfffd6; }
-
-    .divider{
-      height:1px;
-      background: rgba(255,255,255,0.10);
-      margin: 14px 0;
-    }
-
-    /* ===== AI Wizard (one question per page) ===== */
-    .wizard{
-      margin-top:14px;
-      overflow:hidden;
-    }
-    .wizard-top{
-      display:flex;
-      gap:12px;
-      align-items:center;
-      justify-content:space-between;
-      flex-wrap:wrap;
-    }
-    .wizard-progress{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      color: rgba(255,255,255,0.75);
-      font-size:12px;
-    }
-    .dots{
-      display:flex;
-      gap:6px;
-    }
-    .dot{
-      width:8px;height:8px;border-radius:50%;
-      border:1px solid rgba(255,255,255,0.22);
-      background: rgba(255,255,255,0.08);
-    }
-    .dot.active{ background: rgba(201,162,125,0.85); border-color: rgba(201,162,125,0.85); }
-    .wizard-stage{
-      min-height: 320px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding: 18px 6px;
-    }
-    .wizard-panel{
-      width: min(720px, 100%);
-      text-align:center;
-      opacity:1;
-      transform: translateY(0);
-      transition: opacity .28s ease, transform .28s ease;
-    }
-    .wizard-panel.fade-out{ opacity:0; transform: translateY(10px); }
-    .wizard-q{
-      font-size: 18px;
-      line-height: 1.5;
-      margin: 0 0 14px;
-      letter-spacing: .01em;
-    }
-    .wizard-a{
-      width:100%;
-      min-height: 140px;
-      text-align:left;
-      font-size: 14px;
-      line-height: 1.7;
-      padding: 14px 14px;
-      border-radius: 16px;
-      border: 1px solid rgba(255,255,255,0.16);
-      background: rgba(0,0,0,0.28);
-    }
-    .wizard-actions{
-      margin-top: 14px;
-      display:flex;
-      justify-content:center;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-    .wizard-small{
-      margin-top:10px;
-      color: rgba(255,255,255,0.60);
-      font-size:12px;
-      line-height:1.5;
-    }
-
-    /* ===== Generating overlay ===== */
+    /* Generating overlay (random short sentences) */
     .overlay{
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.55);
-      backdrop-filter: blur(8px);
       display:none;
       align-items:center;
       justify-content:center;
-      padding: 18px;
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(10px);
       z-index: 9999;
+      padding: 24px;
     }
     .overlay.show{ display:flex; }
     .overlay-card{
-      width: min(760px, 100%);
+      width: min(720px, 100%);
       border-radius: 22px;
-      border: 1px solid rgba(255,255,255,0.14);
-      background: rgba(20,20,26,0.55);
-      box-shadow: var(--shadow);
-      padding: 22px 18px;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(10,10,14,0.62);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+      padding: 22px;
+      text-align:center;
     }
+    .spinner{
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 3px solid rgba(255,255,255,0.14);
+      border-top-color: rgba(201,162,125,0.85);
+      margin: 0 auto 14px;
+      animation: spin 0.95s linear infinite;
+    }
+    @keyframes spin{ to{ transform: rotate(360deg); } }
     .gen-title{
-      margin:0 0 8px;
       font-size: 16px;
-      letter-spacing:.02em;
+      margin: 0 0 8px;
+      letter-spacing: .02em;
     }
     .gen-line{
-      margin: 14px 0 0;
-      color: rgba(255,255,255,0.85);
-      font-size: 14px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.78);
       line-height: 1.7;
-      min-height: 52px;
-      opacity:1;
-      transform: translateY(0);
-      transition: opacity .25s ease, transform .25s ease;
+      min-height: 50px;
+      transition: opacity .22s ease;
     }
-    .gen-line.fade{ opacity:0; transform: translateY(8px); }
-    .spinner{
-      width: 18px; height:18px;
-      border-radius: 50%;
-      border: 2px solid rgba(255,255,255,0.18);
-      border-top-color: rgba(201,162,125,0.9);
-      animation: spin .9s linear infinite;
-      display:inline-block;
-      vertical-align: -3px;
-      margin-right: 8px;
+    .gen-sub{
+      margin-top: 12px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.60);
     }
-    @keyframes spin{ to{ transform: rotate(360deg);} }
-
-    /* utility */
-    .hidden{ display:none !important; }
   </style>
 </head>
 
@@ -325,747 +361,928 @@
   <div class="wrap">
     <div class="header">
       <div>
-        <h1 id="t_title">建立你的電子喜帖</h1>
-        <div class="sub" id="t_sub">
-          填最必要的資訊 + 上傳 4 張背景照片，即可生成你那個「四頁翻頁」模板。<br/>
+        <h1 id="h1Title">建立你的電子喜帖</h1>
+        <div class="sub" id="subTitle">
+          先回答 3 題（逐題翻頁），AI 會幫你把文案填進表格。最後再上傳 4 張背景照片生成「四頁翻頁」模板。<br/>
           建議照片用橫式、解析度至少 1600px 寬（手機原圖通常 OK）。
         </div>
+
+        <!-- language toggle buttons -->
+        <div class="langbar" role="tablist" aria-label="Language">
+          <button class="langbtn active" data-lang="zh" type="button">繁中</button>
+          <button class="langbtn" data-lang="en" type="button">EN</button>
+          <button class="langbtn" data-lang="ko" type="button">한국어</button>
+          <button class="langbtn" data-lang="vi" type="button">Tiếng Việt</button>
+        </div>
       </div>
-      <span class="tag" id="t_tag">MVP 表單介面</span>
+      <span class="tag" id="mvpTag">四頁流程 MVP</span>
     </div>
 
-    <!-- AI Wizard -->
-    <div class="card wizard" id="aiWizard">
-      <div class="section-title">
-        <h2 id="t_ai_h2">AI 問答（一次一題）</h2>
-        <span class="tag" id="t_ai_tag">可選</span>
-      </div>
-
-      <div class="wizard-top">
-        <div class="wizard-progress">
-          <span id="t_lang_label">語言</span>
-          <select id="langSelect" style="width:auto; min-width: 160px;">
-            <option value="zh">繁體中文</option>
-            <option value="en">English</option>
-            <option value="ko">한국어</option>
-            <option value="vi">Tiếng Việt</option>
-          </select>
+    <!-- Page 1: Q1 -->
+    <section class="page active visible" id="page-q1">
+      <div class="qstage">
+        <div class="qtop">
+          <span class="tag" id="qaTag">AI 問答</span>
+          <span class="step" id="step1">Step 1 / 4</span>
         </div>
 
-        <div class="wizard-progress">
-          <span id="stepText">1 / 3</span>
-          <div class="dots" aria-hidden="true">
-            <span class="dot active" id="dot1"></span>
-            <span class="dot" id="dot2"></span>
-            <span class="dot" id="dot3"></span>
+        <div class="qcenter">
+          <div class="qbox">
+            <p class="qlabel" id="q1Label">Q1｜和我介紹你們的故事吧！請問是哪兩位新人要結婚？</p>
+            <textarea id="ai_q1" placeholder="例：從一封訊息開始，後來變成一張又一張機票..."></textarea>
+            <div class="hint" id="q1Hint">小提示：可以寫「如何認識 / 相處日常 / 轉折點」。</div>
           </div>
         </div>
+
+        <div class="actions">
+          <button class="btn btn-danger" type="button" id="clearAllBtn1">清空</button>
+          <button class="btn btn-primary" type="button" id="toQ2Btn">下一題</button>
+        </div>
+
+        <div class="status" id="qStatus1"></div>
       </div>
+    </section>
 
-      <div class="divider"></div>
+    <!-- Page 2: Q2 -->
+    <section class="page" id="page-q2">
+      <div class="qstage">
+        <div class="qtop">
+          <span class="tag" id="qaTag2">AI 問答</span>
+          <span class="step" id="step2">Step 2 / 4</span>
+        </div>
 
-      <div class="wizard-stage">
-        <div class="wizard-panel" id="wizardPanel">
-          <p class="wizard-q" id="wizardQ">Q1</p>
-          <textarea class="wizard-a" id="wizardA" placeholder=""></textarea>
+        <div class="qcenter">
+          <div class="qbox">
+            <p class="qlabel" id="q2Label">Q2｜你最喜歡對方的一件小事？（具體）</p>
+            <textarea id="ai_q2" placeholder="例：她每次都會記得我愛吃什麼..."></textarea>
+            <div class="hint" id="q2Hint">小提示：越具體越可愛（習慣、口頭禪、貼心小動作）。</div>
+          </div>
+        </div>
 
-          <div class="wizard-actions">
-            <button class="btn btn-ghost" type="button" id="btnPrev">上一步</button>
-            <button class="btn btn-primary" type="button" id="btnNext">下一步</button>
-            <button class="btn btn-ghost" type="button" id="btnReset">清空</button>
+        <div class="actions">
+          <button class="btn btn-ghost" type="button" id="backToQ1Btn">上一題</button>
+          <button class="btn btn-danger" type="button" id="clearAllBtn2">清空</button>
+          <button class="btn btn-primary" type="button" id="toQ3Btn">下一題</button>
+        </div>
+
+        <div class="status" id="qStatus2"></div>
+      </div>
+    </section>
+
+    <!-- Page 3: Q3 -->
+    <section class="page" id="page-q3">
+      <div class="qstage">
+        <div class="qtop">
+          <span class="tag" id="qaTag3">AI 問答</span>
+          <span class="step" id="step3">Step 3 / 4</span>
+        </div>
+
+        <div class="qcenter">
+          <div class="qbox">
+            <p class="qlabel" id="q3Label">Q3｜和我說說婚禮會怎麼進行～時間地點是最重要的！</p>
+            <textarea id="ai_q3" placeholder="例：希望大家感受到我們很認真把彼此當成家人..."></textarea>
+
+            <div class="divider" style="margin:14px 0 12px;"></div>
+
+            <label for="ai_style" id="styleLabel">口吻（第一人稱）</label>
+            <input id="ai_style" placeholder="例：溫柔、幽默、像我平常打字那樣" />
+            <div class="hint" id="styleHint">用來讓 AI 模仿你的語氣（可留空）。</div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-ghost" type="button" id="backToQ2Btn">上一題</button>
+          <button class="btn btn-danger" type="button" id="clearAllBtn3">清空</button>
+          <button class="btn btn-primary" type="button" id="genToFormBtn">生成文案 → 進入表格</button>
+        </div>
+
+        <div class="status" id="qStatus3"></div>
+      </div>
+    </section>
+
+    <!-- Page 4: Form -->
+    <section class="page" id="page-form">
+      <form id="inviteForm" class="card" enctype="multipart/form-data">
+        <div class="section-title">
+          <h2 id="formTitle">基本資訊</h2>
+          <span class="tag" id="formTag">必填</span>
+        </div>
+
+        <div class="grid">
+          <div>
+            <label for="couple_title" id="lblCoupleTitle">新人稱呼（標題）</label>
+            <input id="couple_title" name="couple_title" placeholder="例：Chun-Wei & Yerim" required />
+            <div class="hint" id="hintCoupleTitle">會出現在封面大標題。</div>
           </div>
 
-          <div class="wizard-small" id="wizardHint">
-            回答完三題後按「生成」會自動填入下方表單，你仍可手動修改。
-          </div>
-        </div>
-      </div>
-
-      <div class="actions" style="justify-content:center;">
-        <button class="btn btn-primary" type="button" id="btnGenerateAI">生成文案並自動填入表單</button>
-      </div>
-
-      <div id="aiStatus" class="status"></div>
-    </div>
-
-    <!-- Main Form -->
-    <form id="inviteForm" class="card" enctype="multipart/form-data">
-      <div class="section-title">
-        <h2>基本資訊</h2>
-        <span class="tag">必填</span>
-      </div>
-
-      <div class="grid">
-        <div>
-          <label for="couple_title">新人稱呼（標題）</label>
-          <input id="couple_title" name="couple_title" placeholder="例：Chun-Wei & Yerim" required />
-          <div class="hint">會出現在封面大標題。</div>
-        </div>
-
-        <div>
-          <label for="page_title">瀏覽器標題（title）</label>
-          <input id="page_title" name="page_title" placeholder="例：Chun-Wei & Yerim｜婚禮喜帖" required />
-        </div>
-
-        <div>
-          <label for="wedding_date_text">日期（顯示文字）</label>
-          <input id="wedding_date_text" name="wedding_date_text" placeholder="例：2027 / 01 / 16 (六)" required />
-        </div>
-
-        <div>
-          <label for="wedding_time_text">時間（顯示文字）</label>
-          <input id="wedding_time_text" name="wedding_time_text" placeholder="例：入場 18:00，儀式 18:30" required />
-        </div>
-
-        <div>
-          <label for="venue_name">地點名稱</label>
-          <input id="venue_name" name="venue_name" placeholder="例：首爾君悅酒店" required />
-        </div>
-
-        <div>
-          <label for="venue_address">地址</label>
-          <input id="venue_address" name="venue_address" placeholder="例：韓國 首爾特別市 ..." required />
-        </div>
-
-        <div>
-          <label for="map_url">Google Map 連結</label>
-          <input id="map_url" name="map_url" placeholder="貼 Google Maps 分享連結（或 search/?api=1...）" required />
-        </div>
-
-        <div>
-          <label for="rsvp_url">RSVP 表單連結</label>
-          <input id="rsvp_url" name="rsvp_url" placeholder="Google 表單連結 / 其他報名表" required />
-        </div>
-      </div>
-
-      <div class="divider"></div>
-
-      <div class="section-title">
-        <h2>文案</h2>
-        <span class="tag">可先用預設值</span>
-      </div>
-
-      <div class="grid">
-        <div>
-          <label for="cover_subtitle">封面短句</label>
-          <textarea id="cover_subtitle" name="cover_subtitle" placeholder="例：誠摯邀請您，一起見證我們步入新的旅程。" required></textarea>
-        </div>
-
-        <div>
-          <label for="story_subtitle">故事頁副標</label>
-          <textarea id="story_subtitle" name="story_subtitle" placeholder="例：跨越台南與首爾的日常..." required></textarea>
-        </div>
-
-        <div>
-          <label for="story_p1">故事段落 1</label>
-          <textarea id="story_p1" name="story_p1" required></textarea>
-        </div>
-
-        <div>
-          <label for="story_p2">故事段落 2</label>
-          <textarea id="story_p2" name="story_p2" required></textarea>
-        </div>
-      </div>
-
-      <div class="divider"></div>
-
-      <div class="section-title">
-        <h2>當天流程（3 條）</h2>
-        <span class="tag">必填</span>
-      </div>
-
-      <div class="grid">
-        <div>
-          <label>流程 1 時間</label>
-          <input name="tl1_time" placeholder="例：18:00" required />
-        </div>
-        <div>
-          <label>流程 1 內容</label>
-          <input name="tl1_text" placeholder="例：賓客入場、簡單合照" required />
-        </div>
-
-        <div>
-          <label>流程 2 時間</label>
-          <input name="tl2_time" placeholder="例：18:30" required />
-        </div>
-        <div>
-          <label>流程 2 內容</label>
-          <input name="tl2_text" placeholder="例：證婚儀式開始" required />
-        </div>
-
-        <div>
-          <label>流程 3 時間</label>
-          <input name="tl3_time" placeholder="例：19:30" required />
-        </div>
-        <div>
-          <label>流程 3 內容</label>
-          <input name="tl3_text" placeholder="例：晚宴、致詞與互動時間" required />
-        </div>
-      </div>
-
-      <div class="divider"></div>
-
-      <div class="section-title">
-        <h2>照片上傳（4 張）</h2>
-        <span class="tag">必填</span>
-      </div>
-
-      <div class="uploader">
-        <div class="upload-box wide">
-          <div class="top">
-            <div class="name">上傳 4 張照片（依序套用）</div>
+          <div>
+            <label for="page_title" id="lblPageTitle">瀏覽器標題（title）</label>
+            <input id="page_title" name="page_title" placeholder="例：Chun-Wei & Yerim｜婚禮喜帖" required />
           </div>
 
-          <input type="file" name="photos" accept="image/*" multiple required />
+          <div>
+            <label for="wedding_date_text" id="lblDate">日期（顯示文字）</label>
+            <input id="wedding_date_text" name="wedding_date_text" placeholder="例：2027 / 01 / 16 (六)" required />
+          </div>
 
-          <small>
-            請一次選取 <b>4 張照片</b>，將依序套用為：<br/>
-            ① 封面（Cover） → ② 故事（Story） → ③ 資訊（Details） → ④ RSVP
-            <br/>
-            建議橫式、主體置中。
-          </small>
+          <div>
+            <label for="wedding_time_text" id="lblTime">時間（顯示文字）</label>
+            <input id="wedding_time_text" name="wedding_time_text" placeholder="例：入場 18:00，儀式 18:30" required />
+          </div>
+
+          <div>
+            <label for="venue_name" id="lblVenueName">地點名稱</label>
+            <input id="venue_name" name="venue_name" placeholder="例：首爾君悅酒店" required />
+          </div>
+
+          <div>
+            <label for="venue_address" id="lblVenueAddr">地址</label>
+            <input id="venue_address" name="venue_address" placeholder="例：韓國 首爾特別市 ..." required />
+          </div>
+
+          <div>
+            <label for="map_url" id="lblMap">Google Map 連結</label>
+            <input id="map_url" name="map_url" placeholder="貼 Google Maps 分享連結（或 search/?api=1...）" required />
+          </div>
+
+          <div>
+            <label for="rsvp_url" id="lblRsvp">RSVP 表單連結</label>
+            <input id="rsvp_url" name="rsvp_url" placeholder="Google 表單連結 / 其他報名表" required />
+          </div>
         </div>
-      </div>
 
-      <!-- 固定文案（保留你的模板） -->
-      <input type="hidden" name="brand_title" value="C & Y Wedding" />
-      <input type="hidden" name="brand_sub" value="滑鼠滾輪一次切換一頁" />
-      <input type="hidden" name="rsvp_button_text" value="我要出席 RSVP" />
+        <div class="divider"></div>
 
-      <input type="hidden" name="btn_view_details" value="查看婚禮資訊" />
-      <input type="hidden" name="btn_our_story" value="我們的故事" />
-      <input type="hidden" name="btn_next_details" value="下一頁：婚禮資訊" />
-      <input type="hidden" name="btn_back_cover" value="回到封面" />
-      <input type="hidden" name="story_title" value="我們的故事" />
+        <div class="section-title">
+          <h2 id="copyTitle">文案</h2>
+          <span class="tag" id="copyTag">可先用預設值</span>
+        </div>
 
-      <input type="hidden" name="details_title" value="Wedding Day" />
-      <input type="hidden" name="details_subtitle" value="當天流程與場地資訊" />
-      <input type="hidden" name="btn_open_map" value="在 Google 地圖中開啟" />
-      <input type="hidden" name="btn_next_rsvp" value="下一頁：RSVP" />
-      <input type="hidden" name="details_note" value="＊若想內嵌 Google Map，我也可以幫你加 iframe。" />
+        <div class="grid">
+          <div>
+            <label for="cover_subtitle" id="lblCoverSub">封面短句</label>
+            <textarea id="cover_subtitle" name="cover_subtitle" placeholder="例：誠摯邀請您，一起見證我們步入新的旅程。" required></textarea>
+          </div>
 
-      <input type="hidden" name="rsvp_title" value="RSVP 出席回覆" />
-      <input type="hidden" name="rsvp_subtitle" value="為了讓我們能好好準備座位與餐點，請花一點時間填寫出席回覆。" />
-      <input type="hidden" name="rsvp_step1" value="1) 點擊下方按鈕前往回覆表單（建議使用 Google 表單）。" />
-      <input type="hidden" name="rsvp_step2" value="2) 填寫您的姓名、人數與飲食需求。" />
-      <input type="hidden" name="rsvp_step3" value="3) 送出後，我們會在婚禮前再與您確認。" />
-      <input type="hidden" name="btn_open_rsvp" value="前往 RSVP 表單" />
-      <input type="hidden" name="rsvp_hint" value="＊若無法使用表單，也可以直接回覆這封電子喜帖的寄件人。" />
+          <div>
+            <label for="story_subtitle" id="lblStorySub">故事頁副標</label>
+            <textarea id="story_subtitle" name="story_subtitle" placeholder="例：跨越台南與首爾的日常..." required></textarea>
+          </div>
 
-      <div class="actions">
-        <button class="btn btn-primary" type="submit">生成喜帖</button>
-        <button class="btn btn-ghost" type="button" id="fillDemo">填入範例</button>
-      </div>
+          <div>
+            <label for="story_p1" id="lblStoryP1">故事段落 1</label>
+            <textarea id="story_p1" name="story_p1" required></textarea>
+          </div>
 
-      <div id="status" class="status"></div>
-    </form>
+          <div>
+            <label for="story_p2" id="lblStoryP2">故事段落 2</label>
+            <textarea id="story_p2" name="story_p2" required></textarea>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="section-title">
+          <h2 id="tlTitle">當天流程（3 條）</h2>
+          <span class="tag" id="tlTag">必填</span>
+        </div>
+
+        <div class="grid">
+          <div>
+            <label id="lblTl1Time">流程 1 時間</label>
+            <input name="tl1_time" placeholder="例：18:00" required />
+          </div>
+          <div>
+            <label id="lblTl1Text">流程 1 內容</label>
+            <input name="tl1_text" placeholder="例：賓客入場、簡單合照" required />
+          </div>
+
+          <div>
+            <label id="lblTl2Time">流程 2 時間</label>
+            <input name="tl2_time" placeholder="例：18:30" required />
+          </div>
+          <div>
+            <label id="lblTl2Text">流程 2 內容</label>
+            <input name="tl2_text" placeholder="例：證婚儀式開始" required />
+          </div>
+
+          <div>
+            <label id="lblTl3Time">流程 3 時間</label>
+            <input name="tl3_time" placeholder="例：19:30" required />
+          </div>
+          <div>
+            <label id="lblTl3Text">流程 3 內容</label>
+            <input name="tl3_text" placeholder="例：晚宴、致詞與互動時間" required />
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="section-title">
+          <h2 id="photoTitle">照片上傳（4 張）</h2>
+          <span class="tag" id="photoTag">必填</span>
+        </div>
+
+        <div class="uploader">
+          <div class="upload-box wide">
+            <div class="top">
+              <div class="name" id="photoName">上傳 4 張照片（依序套用）</div>
+            </div>
+
+            <input type="file" name="photos" accept="image/*" multiple required />
+
+            <small id="photoHelp">
+              請一次選取 <b>4 張照片</b>，將依序套用為：<br/>
+              ① 封面（Cover） → ② 故事（Story） → ③ 資訊（Details） → ④ RSVP
+              <br/>
+              建議橫式、主體置中。
+            </small>
+          </div>
+        </div>
+
+        <!-- 固定文字（可照你模板維持） -->
+        <input type="hidden" name="brand_title" value="C & Y Wedding" />
+        <input type="hidden" name="brand_sub" value="滑鼠滾輪一次切換一頁" />
+        <input type="hidden" name="rsvp_button_text" value="我要出席 RSVP" />
+
+        <input type="hidden" name="btn_view_details" value="查看婚禮資訊" />
+        <input type="hidden" name="btn_our_story" value="我們的故事" />
+        <input type="hidden" name="btn_next_details" value="下一頁：婚禮資訊" />
+        <input type="hidden" name="btn_back_cover" value="回到封面" />
+        <input type="hidden" name="story_title" value="我們的故事" />
+
+        <input type="hidden" name="details_title" value="Wedding Day" />
+        <input type="hidden" name="details_subtitle" value="當天流程與場地資訊" />
+        <input type="hidden" name="btn_open_map" value="在 Google 地圖中開啟" />
+        <input type="hidden" name="btn_next_rsvp" value="下一頁：RSVP" />
+        <input type="hidden" name="details_note" value="＊若想內嵌 Google Map，我也可以幫你加 iframe。" />
+
+        <input type="hidden" name="rsvp_title" value="RSVP 出席回覆" />
+        <input type="hidden" name="rsvp_subtitle" value="為了讓我們能好好準備座位與餐點，請花一點時間填寫出席回覆。" />
+        <input type="hidden" name="rsvp_step1" value="1) 點擊下方按鈕前往回覆表單（建議使用 Google 表單）。" />
+        <input type="hidden" name="rsvp_step2" value="2) 填寫您的姓名、人數與飲食需求。" />
+        <input type="hidden" name="rsvp_step3" value="3) 送出後，我們會在婚禮前再與您確認。" />
+        <input type="hidden" name="btn_open_rsvp" value="前往 RSVP 表單" />
+        <input type="hidden" name="rsvp_hint" value="＊若無法使用表單，也可以直接回覆這封電子喜帖的寄件人。" />
+
+        <div class="actions" style="justify-content:flex-start">
+          <button class="btn btn-primary" type="submit" id="submitBtn">生成喜帖</button>
+          <button class="btn btn-ghost" type="button" id="fillDemo">填入範例</button>
+          <button class="btn btn-ghost" type="button" id="backToQ3FromForm">回到問答</button>
+        </div>
+
+        <div id="status" class="status"></div>
+      </form>
+    </section>
   </div>
 
   <!-- Generating overlay -->
-  <div class="overlay" id="genOverlay" aria-hidden="true">
+  <div class="overlay" id="overlay">
     <div class="overlay-card">
-      <h3 class="gen-title" id="genTitle"><span class="spinner"></span>正在生成中…</h3>
-      <div class="sub" id="genSub">我們會先整理你的三題回答，接著把文案填入表單。</div>
-      <div class="gen-line" id="genLine"></div>
-      <div class="status" id="genStatus"></div>
-      <div class="actions" style="justify-content:flex-end; margin-top:16px;">
-        <button class="btn btn-ghost" type="button" id="genCloseBtn" disabled>請稍候…</button>
-      </div>
+      <div class="spinner" aria-hidden="true"></div>
+      <p class="gen-title" id="genTitle">正在生成喜帖文案…</p>
+      <div class="gen-line" id="genLine">把你們的回答變成更像喜帖的語氣。</div>
+      <div class="gen-sub" id="genSub">完成後會自動帶你進入表格頁。</div>
     </div>
   </div>
 
   <script>
-    /* =========================
-       i18n (zh/en/ko/vi)
-    ========================== */
-    const I18N = {
+    /***********************
+     * i18n (ZH/EN/KO/VI)
+     ***********************/
+    const i18n = {
       zh: {
-        pageTitle: "建立你的電子喜帖",
-        sub: "填最必要的資訊 + 上傳 4 張背景照片，即可生成你那個「四頁翻頁」模板。<br/>建議照片用橫式、解析度至少 1600px 寬（手機原圖通常 OK）。",
-        tag: "MVP 表單介面",
-        aiH2: "AI 問答（一次一題）",
-        aiTag: "可選",
-        langLabel: "語言",
-        hint: "回答完三題後按「生成」會自動填入下方表單，你仍可手動修改。",
-        prev: "上一步",
-        next: "下一步",
-        reset: "清空",
-        generate: "生成文案並自動填入表單",
-        needAnswer: "請先回答這題再繼續。",
-        okFilled: "✅ 已填入表單，你可以再微調。",
-        fail: "❌ ",
-        overlayTitle: "正在生成中…",
-        overlaySub: "我們會先整理你的三題回答，接著把文案填入表單。",
-        overlayWait: "請稍候…",
-        overlayDone: "完成，回到表單",
-        overlayFail: "生成失敗：",
-        q: [
-          {
-            title: "Q1｜請簡單介紹你們：是哪兩位新人要結婚？也可以提一下你們怎麼認識的。",
-            placeholder: "例：我們在某個平凡的下午認識，後來把日常慢慢走成了未來…"
-          },
-          {
-            title: "Q2｜你最喜歡對方的一件小事（越具體越好）。",
-            placeholder: "例：他總會在我忙到忘記吃飯時，默默把晚餐放到桌上。"
-          },
-          {
-            title: "Q3｜婚禮想怎麼進行？最重要的是時間與地點，也可以說你希望賓客感受到什麼。",
-            placeholder: "例：我們希望這天很溫暖、很輕鬆，像一場和重要的人相聚的晚餐。"
-          }
-        ],
-        genLines: [
-          "把你們的日常，寫成一封剛剛好的邀請。",
-          "不張揚，但很確定：這一天想和你分享。",
-          "故事不必很長，因為你們會一直走下去。",
-          "把重要的人放進同一個畫面，就成了婚禮。",
-          "謝謝你願意來，替我們的這一頁簽名。"
-        ]
+        docTitle: '建立你的電子喜帖',
+        h1: '建立你的電子喜帖',
+        sub: '先回答 3 題（逐題翻頁），AI 會幫你把文案填進表格。最後再上傳 4 張背景照片生成「四頁翻頁」模板。<br/>建議照片用橫式、解析度至少 1600px 寬（手機原圖通常 OK）。',
+        mvpTag: '四頁流程 MVP',
+        qaTag: 'AI 問答',
+        step1: 'Step 1 / 4',
+        step2: 'Step 2 / 4',
+        step3: 'Step 3 / 4',
+        q1: 'Q1｜和我介紹你們的故事吧！請問是哪兩位新人要結婚？',
+        q1ph: '例：從一封訊息開始，後來變成一張又一張機票...',
+        q1hint: '小提示：可以寫「如何認識 / 相處日常 / 轉折點」。',
+        q2: 'Q2｜你最喜歡對方的一件小事？（具體）',
+        q2ph: '例：她每次都會記得我愛吃什麼...',
+        q2hint: '小提示：越具體越可愛（習慣、口頭禪、貼心小動作）。',
+        q3: 'Q3｜和我說說婚禮會怎麼進行～時間地點是最重要的！',
+        q3ph: '例：希望大家感受到我們很認真把彼此當成家人...',
+        styleLabel: '口吻（第一人稱）',
+        stylePh: '例：溫柔、幽默、像我平常打字那樣',
+        styleHint: '用來讓 AI 模仿你的語氣（可留空）。',
+
+        btnNext: '下一題',
+        btnPrev: '上一題',
+        btnClear: '清空',
+        btnGenToForm: '生成文案 → 進入表格',
+        genTitle: '正在生成喜帖文案…',
+        genSub: '完成後會自動帶你進入表格頁。',
+
+        formTitle: '基本資訊',
+        formTag: '必填',
+        lblCoupleTitle: '新人稱呼（標題）',
+        hintCoupleTitle: '會出現在封面大標題。',
+        lblPageTitle: '瀏覽器標題（title）',
+        lblDate: '日期（顯示文字）',
+        lblTime: '時間（顯示文字）',
+        lblVenueName: '地點名稱',
+        lblVenueAddr: '地址',
+        lblMap: 'Google Map 連結',
+        lblRsvp: 'RSVP 表單連結',
+        copyTitle: '文案',
+        copyTag: '可先用預設值',
+        lblCoverSub: '封面短句',
+        lblStorySub: '故事頁副標',
+        lblStoryP1: '故事段落 1',
+        lblStoryP2: '故事段落 2',
+        tlTitle: '當天流程（3 條）',
+        tlTag: '必填',
+        lblTl1Time: '流程 1 時間',
+        lblTl1Text: '流程 1 內容',
+        lblTl2Time: '流程 2 時間',
+        lblTl2Text: '流程 2 內容',
+        lblTl3Time: '流程 3 時間',
+        lblTl3Text: '流程 3 內容',
+        photoTitle: '照片上傳（4 張）',
+        photoTag: '必填',
+        photoName: '上傳 4 張照片（依序套用）',
+        submitBtn: '生成喜帖',
+        demoBtn: '填入範例',
+        backToQA: '回到問答',
+
+        alerts: {
+          needQ1: '請先回答 Q1。',
+          needQ2: '請先回答 Q2。',
+          needQ3: '請先回答 Q3。',
+          need4Photos: '請一次選取「剛好 4 張」照片，會依順序套用。',
+        }
       },
+
       en: {
-        pageTitle: "Create Your Wedding E-Invitation",
-        sub: "Fill the essentials + upload 4 background photos to generate the 4-page scrolling template.<br/>Landscape photos recommended (≥1600px width).",
-        tag: "MVP Form",
-        aiH2: "AI Q&A (one question at a time)",
-        aiTag: "Optional",
-        langLabel: "Language",
-        hint: "After 3 answers, click Generate to auto-fill the form below. You can still edit manually.",
-        prev: "Back",
-        next: "Next",
-        reset: "Clear",
-        generate: "Generate copy & auto-fill the form",
-        needAnswer: "Please answer this question to continue.",
-        okFilled: "✅ Filled. You can fine-tune the text.",
-        fail: "❌ ",
-        overlayTitle: "Generating…",
-        overlaySub: "We’ll summarize your answers, then fill the form copy.",
-        overlayWait: "Please wait…",
-        overlayDone: "Done — back to form",
-        overlayFail: "Generation failed: ",
-        q: [
-          {
-            title: "Q1｜Who are the two people getting married? (You can also share how you met.)",
-            placeholder: "e.g., We met on an ordinary day, and somehow that became our forever…"
-          },
-          {
-            title: "Q2｜One small thing you love about them (be specific).",
-            placeholder: "e.g., They always remember my favorite drink—even on busy days."
-          },
-          {
-            title: "Q3｜How will the wedding day go? Time & place matter most—what do you want guests to feel?",
-            placeholder: "e.g., Warm, relaxed, like a dinner with the people we love most."
-          }
-        ],
-        genLines: [
-          "Turning your everyday moments into a quiet invitation.",
-          "Not loud—just certain: we want to share this day with you.",
-          "The story doesn’t need to be long, because you’ll keep writing it.",
-          "Put the right people in the same frame—that’s a wedding.",
-          "Thanks for being part of this page in our story."
-        ]
+        docTitle: 'Create Your Wedding e-Invitation',
+        h1: 'Create Your Wedding e-Invitation',
+        sub: 'Answer 3 questions (one per page). AI will draft copy and fill the form for you. Then upload 4 background photos to generate the 4-page template.<br/>Use landscape photos, ideally ≥ 1600px wide.',
+        mvpTag: '4-step MVP',
+        qaTag: 'AI Q&A',
+        step1: 'Step 1 / 4',
+        step2: 'Step 2 / 4',
+        step3: 'Step 3 / 4',
+        q1: 'Q1｜Tell me your story — who are the two people getting married?',
+        q1ph: 'e.g., It started with a message, then became flight tickets…',
+        q1hint: 'Tip: how you met / daily moments / turning point.',
+        q2: 'Q2｜One small thing you love about your partner (be specific).',
+        q2ph: 'e.g., They always remember what I like to eat…',
+        q2hint: 'Tip: the more specific, the sweeter.',
+        q3: 'Q3｜How will the wedding day flow? Time & place matter most!',
+        q3ph: 'e.g., We want everyone to feel…',
+        styleLabel: 'Tone (first-person)',
+        stylePh: 'e.g., warm, witty, like how I usually text',
+        styleHint: 'Optional — helps AI mimic your voice.',
+
+        btnNext: 'Next',
+        btnPrev: 'Back',
+        btnClear: 'Clear',
+        btnGenToForm: 'Generate copy → Go to form',
+        genTitle: 'Generating invitation copy…',
+        genSub: 'You’ll be taken to the form automatically.',
+
+        formTitle: 'Basic Info',
+        formTag: 'Required',
+        lblCoupleTitle: 'Couple title (headline)',
+        hintCoupleTitle: 'Shown on the cover title.',
+        lblPageTitle: 'Browser title',
+        lblDate: 'Date (display text)',
+        lblTime: 'Time (display text)',
+        lblVenueName: 'Venue name',
+        lblVenueAddr: 'Address',
+        lblMap: 'Google Map link',
+        lblRsvp: 'RSVP form link',
+        copyTitle: 'Copy',
+        copyTag: 'You can edit later',
+        lblCoverSub: 'Cover line',
+        lblStorySub: 'Story subtitle',
+        lblStoryP1: 'Story paragraph 1',
+        lblStoryP2: 'Story paragraph 2',
+        tlTitle: 'Timeline (3 items)',
+        tlTag: 'Required',
+        lblTl1Time: 'Timeline 1 time',
+        lblTl1Text: 'Timeline 1 text',
+        lblTl2Time: 'Timeline 2 time',
+        lblTl2Text: 'Timeline 2 text',
+        lblTl3Time: 'Timeline 3 time',
+        lblTl3Text: 'Timeline 3 text',
+        photoTitle: 'Upload Photos (4)',
+        photoTag: 'Required',
+        photoName: 'Upload 4 photos (in order)',
+        submitBtn: 'Create Invitation',
+        demoBtn: 'Fill Demo',
+        backToQA: 'Back to Q&A',
+
+        alerts: {
+          needQ1: 'Please answer Q1 first.',
+          needQ2: 'Please answer Q2 first.',
+          needQ3: 'Please answer Q3 first.',
+          need4Photos: 'Please select exactly 4 photos (in order).',
+        }
       },
+
       ko: {
-        pageTitle: "모바일 청첩장 만들기",
-        sub: "필수 정보 입력 + 배경 사진 4장을 업로드하면 4페이지 스크롤 템플릿이 생성됩니다.<br/>가로 사진(가로 1600px 이상) 추천.",
-        tag: "MVP 폼",
-        aiH2: "AI 문답(한 번에 한 질문)",
-        aiTag: "선택",
-        langLabel: "언어",
-        hint: "3문항 답변 후 ‘생성’을 누르면 아래 폼에 자동으로 채워집니다. 이후 수정 가능해요.",
-        prev: "이전",
-        next: "다음",
-        reset: "초기화",
-        generate: "문구 생성 후 폼에 자동 입력",
-        needAnswer: "계속하려면 답변을 입력해 주세요.",
-        okFilled: "✅ 폼에 입력 완료. 조금 더 다듬어도 좋아요.",
-        fail: "❌ ",
-        overlayTitle: "생성 중…",
-        overlaySub: "3개의 답변을 정리한 뒤, 폼 문구를 채워드립니다.",
-        overlayWait: "잠시만요…",
-        overlayDone: "완료 — 폼으로 돌아가기",
-        overlayFail: "생성 실패: ",
-        q: [
-          {
-            title: "Q1｜결혼하는 두 분은 누구인가요? 어떻게 만나게 되었는지도 좋아요.",
-            placeholder: "예: 평범한 하루에 만났고, 그게 우리의 미래가 되었어요…"
-          },
-          {
-            title: "Q2｜상대의 ‘작은 습관/행동’ 중 가장 좋아하는 건?",
-            placeholder: "예: 바쁜 날에도 제가 좋아하는 걸 꼭 챙겨줘요."
-          },
-          {
-            title: "Q3｜결혼식은 어떻게 진행되나요? 시간/장소가 가장 중요해요. 하객에게 전하고 싶은 분위기도!",
-            placeholder: "예: 따뜻하고 편안한, 소중한 사람들과의 저녁식사 같은 날."
-          }
-        ],
-        genLines: [
-          "우리의 일상을, 조용한 초대장으로 바꿔볼게요.",
-          "화려하진 않아도 확실해요—이날을 함께하고 싶어요.",
-          "이야기는 길 필요 없어요. 앞으로도 계속 써갈 테니까요.",
-          "중요한 사람들을 한 장면에 담으면, 그게 결혼식이죠.",
-          "와줘서 고마워요. 우리의 한 페이지가 되어주세요."
-        ]
+        docTitle: '모바일 청첩장 만들기',
+        h1: '모바일 청첩장 만들기',
+        sub: '질문 3개를 한 페이지씩 답하면, AI가 문구를 만들어 아래 폼에 자동 입력해요. 그 다음 배경 사진 4장을 올리면 4페이지 템플릿이 생성돼요.<br/>가로 사진(폭 1600px 이상 권장).',
+        mvpTag: '4단계 MVP',
+        qaTag: 'AI 문답',
+        step1: 'Step 1 / 4',
+        step2: 'Step 2 / 4',
+        step3: 'Step 3 / 4',
+        q1: 'Q1｜두 분의 이야기를 들려주세요. 누가 결혼하나요?',
+        q1ph: '예: 한 통의 메시지에서 시작해 항공권이 되었어요…',
+        q1hint: '팁: 만남 / 일상 / 전환점.',
+        q2: 'Q2｜상대의 “작은” 매력 한 가지(구체적으로).',
+        q2ph: '예: 항상 내가 좋아하는 걸 기억해줘요…',
+        q2hint: '팁: 구체적일수록 더 귀여워요.',
+        q3: 'Q3｜결혼식은 어떻게 진행되나요? 시간/장소가 중요해요!',
+        q3ph: '예: 모두가 느꼈으면 하는 분위기…',
+        styleLabel: '말투(1인칭)',
+        stylePh: '예: 따뜻하게, 유머 있게, 평소 문자처럼',
+        styleHint: '선택 — AI가 말투를 맞추는 데 도움돼요.',
+
+        btnNext: '다음',
+        btnPrev: '이전',
+        btnClear: '초기화',
+        btnGenToForm: '문구 생성 → 폼으로',
+        genTitle: '청첩장 문구 생성 중…',
+        genSub: '완료되면 자동으로 폼 페이지로 이동해요.',
+
+        formTitle: '기본 정보',
+        formTag: '필수',
+        lblCoupleTitle: '신랑/신부 표기(제목)',
+        hintCoupleTitle: '커버의 큰 제목에 표시돼요.',
+        lblPageTitle: '브라우저 제목',
+        lblDate: '날짜(표시용)',
+        lblTime: '시간(표시용)',
+        lblVenueName: '장소명',
+        lblVenueAddr: '주소',
+        lblMap: '구글맵 링크',
+        lblRsvp: 'RSVP 링크',
+        copyTitle: '문구',
+        copyTag: '나중에 수정 가능',
+        lblCoverSub: '커버 한 줄',
+        lblStorySub: '스토리 부제',
+        lblStoryP1: '스토리 1문단',
+        lblStoryP2: '스토리 2문단',
+        tlTitle: '타임라인(3개)',
+        tlTag: '필수',
+        lblTl1Time: '타임라인 1 시간',
+        lblTl1Text: '타임라인 1 내용',
+        lblTl2Time: '타임라인 2 시간',
+        lblTl2Text: '타임라인 2 내용',
+        lblTl3Time: '타임라인 3 시간',
+        lblTl3Text: '타임라인 3 내용',
+        photoTitle: '사진 업로드(4장)',
+        photoTag: '필수',
+        photoName: '사진 4장 업로드(순서대로)',
+        submitBtn: '청첩장 생성',
+        demoBtn: '예시 채우기',
+        backToQA: '문답으로',
+
+        alerts: {
+          needQ1: 'Q1을 먼저 작성해 주세요.',
+          needQ2: 'Q2를 먼저 작성해 주세요.',
+          needQ3: 'Q3을 먼저 작성해 주세요.',
+          need4Photos: '사진을 정확히 4장 선택해 주세요.',
+        }
       },
+
       vi: {
-        pageTitle: "Tạo Thiệp Cưới Điện Tử",
-        sub: "Điền thông tin cần thiết + tải lên 4 ảnh nền để tạo mẫu 4 trang cuộn.<br/>Khuyến nghị ảnh ngang (rộng ≥1600px).",
-        tag: "MVP Form",
-        aiH2: "Hỏi đáp AI (mỗi lần 1 câu)",
-        aiTag: "Tuỳ chọn",
-        langLabel: "Ngôn ngữ",
-        hint: "Trả lời 3 câu rồi bấm Tạo để tự điền nội dung vào form bên dưới. Bạn vẫn có thể chỉnh sửa.",
-        prev: "Quay lại",
-        next: "Tiếp theo",
-        reset: "Xoá",
-        generate: "Tạo nội dung & tự điền form",
-        needAnswer: "Vui lòng trả lời câu này để tiếp tục.",
-        okFilled: "✅ Đã điền vào form. Bạn có thể chỉnh lại cho hợp ý.",
-        fail: "❌ ",
-        overlayTitle: "Đang tạo…",
-        overlaySub: "Chúng tôi sẽ tổng hợp 3 câu trả lời và điền nội dung vào form.",
-        overlayWait: "Vui lòng đợi…",
-        overlayDone: "Xong — quay lại form",
-        overlayFail: "Tạo thất bại: ",
-        q: [
-          {
-            title: "Q1｜Hai bạn là ai? (Có thể kể ngắn về cách gặp nhau.)",
-            placeholder: "VD: Chúng mình gặp nhau trong một ngày rất bình thường, rồi thành tương lai của nhau…"
-          },
-          {
-            title: "Q2｜Một điều nhỏ bạn thích ở đối phương (cụ thể càng tốt).",
-            placeholder: "VD: Dù bận đến đâu, họ vẫn nhớ mình thích ăn gì."
-          },
-          {
-            title: "Q3｜Ngày cưới sẽ diễn ra thế nào? Thời gian/địa điểm quan trọng nhất—bạn muốn khách cảm nhận điều gì?",
-            placeholder: "VD: Ấm áp, nhẹ nhàng, như một bữa tối với những người quan trọng."
-          }
-        ],
-        genLines: [
-          "Biến những điều thường ngày thành một lời mời thật vừa đủ.",
-          "Không phô trương, nhưng rất chắc chắn: muốn chia sẻ ngày này với bạn.",
-          "Câu chuyện không cần dài, vì hai bạn sẽ còn viết tiếp.",
-          "Đặt đúng người vào cùng một khung hình—đó là đám cưới.",
-          "Cảm ơn vì bạn đến và ký tên vào trang này của chúng mình."
-        ]
-      }
+        docTitle: 'Tạo thiệp cưới điện tử',
+        h1: 'Tạo thiệp cưới điện tử',
+        sub: 'Trả lời 3 câu hỏi (mỗi câu 1 trang). AI sẽ viết nội dung và tự điền vào biểu mẫu. Sau đó tải lên 4 ảnh nền để tạo mẫu 4 trang.<br/>Khuyên dùng ảnh ngang, rộng ≥ 1600px.',
+        mvpTag: 'MVP 4 bước',
+        qaTag: 'Hỏi đáp AI',
+        step1: 'Bước 1 / 4',
+        step2: 'Bước 2 / 4',
+        step3: 'Bước 3 / 4',
+        q1: 'Q1｜Kể cho mình câu chuyện của hai bạn—ai là hai người sắp cưới?',
+        q1ph: 'Ví dụ: Bắt đầu từ một tin nhắn rồi thành những chuyến bay…',
+        q1hint: 'Gợi ý: gặp nhau thế nào / khoảnh khắc thường ngày / bước ngoặt.',
+        q2: 'Q2｜Một điều nhỏ bạn thích ở người ấy (cụ thể).',
+        q2ph: 'Ví dụ: Luôn nhớ mình thích ăn gì…',
+        q2hint: 'Gợi ý: càng cụ thể càng dễ thương.',
+        q3: 'Q3｜Đám cưới sẽ diễn ra ra sao? Thời gian & địa điểm rất quan trọng!',
+        q3ph: 'Ví dụ: Bạn muốn khách cảm nhận điều gì…',
+        styleLabel: 'Giọng điệu (ngôi “tôi”)',
+        stylePh: 'Ví dụ: ấm áp, hài hước, như cách mình nhắn tin',
+        styleHint: 'Tuỳ chọn — giúp AI bắt đúng giọng.',
+
+        btnNext: 'Tiếp',
+        btnPrev: 'Quay lại',
+        btnClear: 'Xoá',
+        btnGenToForm: 'Tạo nội dung → Vào biểu mẫu',
+        genTitle: 'Đang tạo nội dung thiệp…',
+        genSub: 'Xong sẽ tự chuyển sang trang biểu mẫu.',
+
+        formTitle: 'Thông tin cơ bản',
+        formTag: 'Bắt buộc',
+        lblCoupleTitle: 'Tiêu đề cô dâu & chú rể',
+        hintCoupleTitle: 'Hiển thị ở trang bìa.',
+        lblPageTitle: 'Tiêu đề trình duyệt',
+        lblDate: 'Ngày (hiển thị)',
+        lblTime: 'Giờ (hiển thị)',
+        lblVenueName: 'Tên địa điểm',
+        lblVenueAddr: 'Địa chỉ',
+        lblMap: 'Link Google Maps',
+        lblRsvp: 'Link RSVP',
+        copyTitle: 'Nội dung',
+        copyTag: 'Có thể chỉnh sửa',
+        lblCoverSub: 'Câu ngắn trang bìa',
+        lblStorySub: 'Phụ đề câu chuyện',
+        lblStoryP1: 'Đoạn 1',
+        lblStoryP2: 'Đoạn 2',
+        tlTitle: 'Lịch trình (3 mục)',
+        tlTag: 'Bắt buộc',
+        lblTl1Time: 'Mục 1 - giờ',
+        lblTl1Text: 'Mục 1 - nội dung',
+        lblTl2Time: 'Mục 2 - giờ',
+        lblTl2Text: 'Mục 2 - nội dung',
+        lblTl3Time: 'Mục 3 - giờ',
+        lblTl3Text: 'Mục 3 - nội dung',
+        photoTitle: 'Tải ảnh (4 ảnh)',
+        photoTag: 'Bắt buộc',
+        photoName: 'Tải lên 4 ảnh (theo thứ tự)',
+        submitBtn: 'Tạo thiệp',
+        demoBtn: 'Điền ví dụ',
+        backToQA: 'Quay lại hỏi đáp',
+
+        alerts: {
+          needQ1: 'Vui lòng trả lời Q1 trước.',
+          needQ2: 'Vui lòng trả lời Q2 trước.',
+          needQ3: 'Vui lòng trả lời Q3 trước.',
+          need4Photos: 'Vui lòng chọn đúng 4 ảnh theo thứ tự.',
+        }
+      },
     };
 
-    let currentLang = "zh";
-    const answers = ["", "", ""]; // Q1..Q3
-    let step = 0; // 0..2
-    const FADE_MS = 220;
-
-    const els = {
-      t_title: document.getElementById("t_title"),
-      t_sub: document.getElementById("t_sub"),
-      t_tag: document.getElementById("t_tag"),
-      t_ai_h2: document.getElementById("t_ai_h2"),
-      t_ai_tag: document.getElementById("t_ai_tag"),
-      t_lang_label: document.getElementById("t_lang_label"),
-
-      langSelect: document.getElementById("langSelect"),
-      stepText: document.getElementById("stepText"),
-      dot1: document.getElementById("dot1"),
-      dot2: document.getElementById("dot2"),
-      dot3: document.getElementById("dot3"),
-
-      panel: document.getElementById("wizardPanel"),
-      q: document.getElementById("wizardQ"),
-      a: document.getElementById("wizardA"),
-      hint: document.getElementById("wizardHint"),
-      btnPrev: document.getElementById("btnPrev"),
-      btnNext: document.getElementById("btnNext"),
-      btnReset: document.getElementById("btnReset"),
-      btnGenerateAI: document.getElementById("btnGenerateAI"),
-      aiStatus: document.getElementById("aiStatus"),
-
-      genOverlay: document.getElementById("genOverlay"),
-      genTitle: document.getElementById("genTitle"),
-      genSub: document.getElementById("genSub"),
-      genLine: document.getElementById("genLine"),
-      genStatus: document.getElementById("genStatus"),
-      genCloseBtn: document.getElementById("genCloseBtn"),
-    };
+    let currentLang = 'zh';
 
     function applyLang(lang){
       currentLang = lang;
-      const t = I18N[lang];
+      const t = i18n[lang];
 
-      // top texts
-      document.title = t.pageTitle;
-      els.t_title.textContent = t.pageTitle;
-      els.t_sub.innerHTML = t.sub;
-      els.t_tag.textContent = t.tag;
+      document.getElementById('docTitle').textContent = t.docTitle;
+      document.title = t.docTitle;
+      document.getElementById('h1Title').textContent = t.h1;
+      document.getElementById('subTitle').innerHTML = t.sub;
+      document.getElementById('mvpTag').textContent = t.mvpTag;
 
-      // wizard labels
-      els.t_ai_h2.textContent = t.aiH2;
-      els.t_ai_tag.textContent = t.aiTag;
-      els.t_lang_label.textContent = t.langLabel;
+      document.getElementById('qaTag').textContent = t.qaTag;
+      document.getElementById('qaTag2').textContent = t.qaTag;
+      document.getElementById('qaTag3').textContent = t.qaTag;
 
-      els.btnPrev.textContent = t.prev;
-      els.btnNext.textContent = (step === 2) ? t.next : t.next;
-      els.btnReset.textContent = t.reset;
-      els.btnGenerateAI.textContent = t.generate;
-      els.hint.textContent = t.hint;
+      document.getElementById('step1').textContent = t.step1;
+      document.getElementById('step2').textContent = t.step2;
+      document.getElementById('step3').textContent = t.step3;
+
+      document.getElementById('q1Label').textContent = t.q1;
+      document.getElementById('ai_q1').placeholder = t.q1ph;
+      document.getElementById('q1Hint').textContent = t.q1hint;
+
+      document.getElementById('q2Label').textContent = t.q2;
+      document.getElementById('ai_q2').placeholder = t.q2ph;
+      document.getElementById('q2Hint').textContent = t.q2hint;
+
+      document.getElementById('q3Label').textContent = t.q3;
+      document.getElementById('ai_q3').placeholder = t.q3ph;
+
+      document.getElementById('styleLabel').textContent = t.styleLabel;
+      document.getElementById('ai_style').placeholder = t.stylePh;
+      document.getElementById('styleHint').textContent = t.styleHint;
+
+      // buttons
+      document.getElementById('toQ2Btn').textContent = t.btnNext;
+      document.getElementById('toQ3Btn').textContent = t.btnNext;
+      document.getElementById('backToQ1Btn').textContent = t.btnPrev;
+      document.getElementById('backToQ2Btn').textContent = t.btnPrev;
+      document.getElementById('backToQ2Btn').textContent = t.btnPrev;
+      document.getElementById('backToQ2Btn').textContent = t.btnPrev;
+      document.getElementById('backToQ2Btn').textContent = t.btnPrev;
+      document.getElementById('backToQ2Btn').textContent = t.btnPrev;
+      document.getElementById('backToQ2Btn').textContent = t.btnPrev;
+      document.getElementById('backToQ2Btn').textContent = t.btnPrev;
+      document.getElementById('backToQ2Btn').textContent = t.btnPrev;
+      document.getElementById('backToQ2Btn').textContent = t.btnPrev;
+
+      document.getElementById('backToQ1Btn').textContent = t.btnPrev;
+      document.getElementById('backToQ2Btn').textContent = t.btnPrev;
+      document.getElementById('backToQ3Btn').textContent = t.btnPrev;
+
+      document.getElementById('clearAllBtn1').textContent = t.btnClear;
+      document.getElementById('clearAllBtn2').textContent = t.btnClear;
+      document.getElementById('clearAllBtn3').textContent = t.btnClear;
+
+      document.getElementById('genToFormBtn').textContent = t.btnGenToForm;
 
       // overlay
-      els.genTitle.innerHTML = `<span class="spinner"></span>${t.overlayTitle}`;
-      els.genSub.textContent = t.overlaySub;
-      els.genCloseBtn.textContent = t.overlayWait;
+      document.getElementById('genTitle').textContent = t.genTitle;
+      document.getElementById('genSub').textContent = t.genSub;
 
-      // re-render step
-      renderStep(false);
+      // form
+      document.getElementById('formTitle').textContent = t.formTitle;
+      document.getElementById('formTag').textContent = t.formTag;
+      document.getElementById('lblCoupleTitle').textContent = t.lblCoupleTitle;
+      document.getElementById('hintCoupleTitle').textContent = t.hintCoupleTitle;
+      document.getElementById('lblPageTitle').textContent = t.lblPageTitle;
+      document.getElementById('lblDate').textContent = t.lblDate;
+      document.getElementById('lblTime').textContent = t.lblTime;
+      document.getElementById('lblVenueName').textContent = t.lblVenueName;
+      document.getElementById('lblVenueAddr').textContent = t.lblVenueAddr;
+      document.getElementById('lblMap').textContent = t.lblMap;
+      document.getElementById('lblRsvp').textContent = t.lblRsvp;
+
+      document.getElementById('copyTitle').textContent = t.copyTitle;
+      document.getElementById('copyTag').textContent = t.copyTag;
+      document.getElementById('lblCoverSub').textContent = t.lblCoverSub;
+      document.getElementById('lblStorySub').textContent = t.lblStorySub;
+      document.getElementById('lblStoryP1').textContent = t.lblStoryP1;
+      document.getElementById('lblStoryP2').textContent = t.lblStoryP2;
+
+      document.getElementById('tlTitle').textContent = t.tlTitle;
+      document.getElementById('tlTag').textContent = t.tlTag;
+      document.getElementById('lblTl1Time').textContent = t.lblTl1Time;
+      document.getElementById('lblTl1Text').textContent = t.lblTl1Text;
+      document.getElementById('lblTl2Time').textContent = t.lblTl2Time;
+      document.getElementById('lblTl2Text').textContent = t.lblTl2Text;
+      document.getElementById('lblTl3Time').textContent = t.lblTl3Time;
+      document.getElementById('lblTl3Text').textContent = t.lblTl3Text;
+
+      document.getElementById('photoTitle').textContent = t.photoTitle;
+      document.getElementById('photoTag').textContent = t.photoTag;
+      document.getElementById('photoName').textContent = t.photoName;
+
+      document.getElementById('submitBtn').textContent = t.submitBtn;
+      document.getElementById('fillDemo').textContent = t.demoBtn;
+      document.getElementById('backToQ3FromForm').textContent = t.backToQA;
     }
 
-    function renderDots(){
-      [els.dot1, els.dot2, els.dot3].forEach((d, i) => {
-        d.classList.toggle("active", i === step);
+    // language button event
+    document.querySelectorAll('.langbtn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.langbtn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        applyLang(btn.dataset.lang);
       });
-      els.stepText.textContent = `${step + 1} / 3`;
-    }
-
-    function renderStep(withFade=true){
-      const t = I18N[currentLang];
-
-      const doRender = () => {
-        renderDots();
-        els.q.textContent = t.q[step].title;
-        els.a.placeholder = t.q[step].placeholder;
-        els.a.value = answers[step] || "";
-
-        els.btnPrev.disabled = (step === 0);
-        els.btnNext.disabled = false;
-
-        // focus a bit later for mobile keyboard stability
-        setTimeout(() => els.a.focus(), 30);
-      };
-
-      if(!withFade){
-        doRender();
-        return;
-      }
-
-      // fade out -> swap -> fade in
-      els.panel.classList.add("fade-out");
-      setTimeout(() => {
-        doRender();
-        els.panel.classList.remove("fade-out");
-      }, FADE_MS);
-    }
-
-    function saveCurrentAnswer(){
-      answers[step] = (els.a.value || "").trim();
-    }
-
-    function requireAnswerOrWarn(){
-      const t = I18N[currentLang];
-      saveCurrentAnswer();
-      if(!answers[step]){
-        els.aiStatus.className = "status error";
-        els.aiStatus.textContent = t.needAnswer;
-        els.a.focus();
-        return false;
-      }
-      els.aiStatus.textContent = "";
-      els.aiStatus.className = "status";
-      return true;
-    }
-
-    els.langSelect.addEventListener("change", () => applyLang(els.langSelect.value));
-
-    els.btnPrev.addEventListener("click", () => {
-      saveCurrentAnswer();
-      if(step > 0){
-        step -= 1;
-        renderStep(true);
-      }
     });
 
-    els.btnNext.addEventListener("click", () => {
-      if(!requireAnswerOrWarn()) return;
-      if(step < 2){
-        step += 1;
-        renderStep(true);
-      }else{
-        // last step, just stay (generate button below)
-        els.aiStatus.className = "status";
-      }
-    });
+    /***********************
+     * Page transitions (fade out/in)
+     ***********************/
+    const pages = {
+      q1: document.getElementById('page-q1'),
+      q2: document.getElementById('page-q2'),
+      q3: document.getElementById('page-q3'),
+      form: document.getElementById('page-form'),
+    };
 
-    els.btnReset.addEventListener("click", () => {
-      answers[0] = answers[1] = answers[2] = "";
-      els.aiStatus.textContent = "";
-      els.aiStatus.className = "status";
-      renderStep(false);
-    });
+    function showPage(key){
+      const target = pages[key];
+      if(!target) return;
 
-    // allow Enter+Ctrl/Meta to next
-    els.a.addEventListener("keydown", (e) => {
-      if((e.ctrlKey || e.metaKey) && e.key === "Enter"){
-        els.btnNext.click();
-      }
-    });
+      const current = document.querySelector('.page.active');
+      if(current === target) return;
 
-    /* =========================
-       Generating overlay lines
-    ========================== */
-    let lineTimer = null;
-    function startLineRotation(){
-      const t = I18N[currentLang];
-      const pool = [...t.genLines];
-      // shuffle
-      for(let i=pool.length-1;i>0;i--){
-        const j = Math.floor(Math.random()*(i+1));
-        [pool[i], pool[j]] = [pool[j], pool[i]];
-      }
-      let idx = 0;
-
-      const showLine = () => {
-        els.genLine.classList.add("fade");
+      // fade out current
+      if(current){
+        current.classList.remove('visible');
         setTimeout(() => {
-          els.genLine.textContent = pool[idx % pool.length];
-          els.genLine.classList.remove("fade");
-          idx += 1;
+          current.classList.remove('active');
+          // activate target
+          target.classList.add('active');
+          // force reflow for transition
+          void target.offsetWidth;
+          target.classList.add('visible');
+          window.scrollTo({ top: 0, behavior: 'instant' });
+        }, 320);
+      }else{
+        target.classList.add('active');
+        void target.offsetWidth;
+        target.classList.add('visible');
+      }
+    }
+
+    /***********************
+     * Clear + simple validation
+     ***********************/
+    function clearAll(){
+      document.getElementById('ai_q1').value = '';
+      document.getElementById('ai_q2').value = '';
+      document.getElementById('ai_q3').value = '';
+      document.getElementById('ai_style').value = '';
+      ['qStatus1','qStatus2','qStatus3'].forEach(id => {
+        const el = document.getElementById(id);
+        el.textContent = '';
+        el.className = 'status';
+      });
+    }
+    document.getElementById('clearAllBtn1').addEventListener('click', clearAll);
+    document.getElementById('clearAllBtn2').addEventListener('click', clearAll);
+    document.getElementById('clearAllBtn3').addEventListener('click', clearAll);
+
+    function setQStatus(pageId, msg, ok=false){
+      const el = document.getElementById(pageId);
+      el.textContent = msg || '';
+      el.className = 'status ' + (ok ? 'ok' : (msg ? 'error' : ''));
+    }
+
+    /***********************
+     * Nav buttons
+     ***********************/
+    document.getElementById('toQ2Btn').addEventListener('click', () => {
+      const a1 = document.getElementById('ai_q1').value.trim();
+      if(!a1) return setQStatus('qStatus1', i18n[currentLang].alerts.needQ1, false);
+      setQStatus('qStatus1', '', true);
+      showPage('q2');
+      setTimeout(() => document.getElementById('ai_q2').focus(), 380);
+    });
+
+    document.getElementById('backToQ1Btn').addEventListener('click', () => showPage('q1'));
+
+    document.getElementById('toQ3Btn').addEventListener('click', () => {
+      const a2 = document.getElementById('ai_q2').value.trim();
+      if(!a2) return setQStatus('qStatus2', i18n[currentLang].alerts.needQ2, false);
+      setQStatus('qStatus2', '', true);
+      showPage('q3');
+      setTimeout(() => document.getElementById('ai_q3').focus(), 380);
+    });
+
+    document.getElementById('backToQ2Btn').addEventListener('click', () => showPage('q2'));
+
+    document.getElementById('backToQ3Btn').addEventListener('click', () => showPage('q3'));
+
+    document.getElementById('backToQ3FromForm').addEventListener('click', () => showPage('q3'));
+
+    /***********************
+     * Generating overlay: random short lines
+     ***********************/
+    const overlay = document.getElementById('overlay');
+    const genLine = document.getElementById('genLine');
+
+    const randomLines = {
+      zh: [
+        '把你們的回答變得更像喜帖的語氣。',
+        '整理成「短句 + 故事段落」的節奏。',
+        '幫你抓出最甜的那一句。',
+        '把細節留著、把情緒放大一點點。',
+        '讓每一段都更像“你們”。',
+      ],
+      en: [
+        'Turning your answers into invitation-style copy.',
+        'Shaping a warm, concise rhythm.',
+        'Finding the sweetest detail to highlight.',
+        'Keeping it classy—no cringe, no brag.',
+        'Making it sound like you.',
+      ],
+      ko: [
+        '답변을 청첩장 문구로 자연스럽게 다듬는 중…',
+        '짧은 문장 + 스토리 흐름으로 정리 중…',
+        '가장 설레는 포인트를 뽑는 중…',
+        '과하지 않게, 우아하게.',
+        '두 분만의 톤으로 맞추는 중…',
+      ],
+      vi: [
+        'Đang chuyển câu trả lời thành văn phong thiệp mời…',
+        'Sắp xếp nhịp: câu ngắn + câu chuyện…',
+        'Chọn ra chi tiết dễ thương nhất…',
+        'Thanh lịch, vừa đủ, không phô trương.',
+        'Đưa về đúng “giọng” của hai bạn.',
+      ],
+    };
+
+    function showOverlay(){
+      overlay.classList.add('show');
+      let alive = true;
+
+      const tick = () => {
+        if(!alive) return;
+        const arr = randomLines[currentLang] || randomLines.zh;
+        const line = arr[Math.floor(Math.random()*arr.length)];
+        genLine.style.opacity = '0.15';
+        setTimeout(() => {
+          genLine.textContent = line;
+          genLine.style.opacity = '1';
         }, 180);
       };
 
-      showLine();
-      lineTimer = setInterval(showLine, 1300);
+      tick();
+      const timer = setInterval(tick, 950);
+
+      return () => {
+        alive = false;
+        clearInterval(timer);
+        overlay.classList.remove('show');
+      };
     }
 
-    function stopLineRotation(){
-      if(lineTimer) clearInterval(lineTimer);
-      lineTimer = null;
-    }
+    /***********************
+     * AI prefill (POST /api/ai_prefill) then go to form page
+     ***********************/
+    async function aiPrefillAndGoForm(){
+      const a1 = document.getElementById('ai_q1').value.trim();
+      const a2 = document.getElementById('ai_q2').value.trim();
+      const a3 = document.getElementById('ai_q3').value.trim();
+      const style = document.getElementById('ai_style').value.trim();
 
-    function openOverlay(){
-      els.genOverlay.classList.add("show");
-      els.genOverlay.setAttribute("aria-hidden", "false");
-      els.genStatus.textContent = "";
-      els.genStatus.className = "status";
-      els.genCloseBtn.disabled = true;
-      els.genCloseBtn.textContent = I18N[currentLang].overlayWait;
-      startLineRotation();
-    }
+      if(!a1) return setQStatus('qStatus1', i18n[currentLang].alerts.needQ1, false);
+      if(!a2) return setQStatus('qStatus2', i18n[currentLang].alerts.needQ2, false);
+      if(!a3) return setQStatus('qStatus3', i18n[currentLang].alerts.needQ3, false);
 
-    function closeOverlay(){
-      stopLineRotation();
-      els.genOverlay.classList.remove("show");
-      els.genOverlay.setAttribute("aria-hidden", "true");
-    }
+      setQStatus('qStatus3', '', true);
 
-    // only allow close after done/fail
-    els.genCloseBtn.addEventListener("click", () => {
-      if(els.genCloseBtn.disabled) return;
-      closeOverlay();
-      // scroll to form
-      document.getElementById("inviteForm").scrollIntoView({ behavior:"smooth", block:"start" });
-    });
-
-    /* =========================
-       Call backend /api/ai_prefill
-       (expects: { ok: true, data: {...} })
-    ========================== */
-    els.btnGenerateAI.addEventListener("click", async () => {
-      const t = I18N[currentLang];
-
-      // ensure all answers exist
-      saveCurrentAnswer();
-      for(let i=0;i<3;i++){
-        if(!answers[i]){
-          step = i;
-          renderStep(true);
-          els.aiStatus.className = "status error";
-          els.aiStatus.textContent = t.needAnswer;
-          return;
-        }
-      }
-
-      openOverlay();
+      const hideOverlay = showOverlay();
 
       const payload = {
-        lang: currentLang, // ✅ optional: you can read this in backend if you want
+        // 你後端原本吃 answers[]，我維持相容
         answers: [
-          { q: "Q1", a: answers[0] },
-          { q: "Q2", a: answers[1] },
-          { q: "Q3", a: answers[2] },
+          { q: 'Q1', a: a1 },
+          { q: 'Q2', a: a2 },
+          { q: 'Q3', a: a3 },
+          { q: 'tone', a: style },
+          { q: 'language', a: currentLang }, // 讓後端知道語言 zh/en/ko/vi
         ]
       };
 
       try{
-        const res = await fetch("/api/ai_prefill", {
-          method: "POST",
-          headers: { "Content-Type":"application/json" },
+        const res = await fetch('/api/ai_prefill', {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
           body: JSON.stringify(payload)
         });
 
-        // safer parse
+        // 先讀 text，避免後端回 HTML 直接炸
         const text = await res.text();
-        let data = null;
-        try { data = JSON.parse(text); } catch(e){}
+        let data;
+        try { data = JSON.parse(text); }
+        catch {
+          throw new Error(`AI 回傳不是 JSON（HTTP ${res.status}）：${text.slice(0, 200)}`);
+        }
 
-        if(!res.ok){
-          throw new Error(`${res.status} ${text.slice(0, 200)}`);
-        }
-        if(!data || !data.ok){
-          throw new Error((data && data.error) ? data.error : "AI response not ok");
-        }
+        if(!res.ok || !data.ok) throw new Error(data?.error || `AI 失敗（HTTP ${res.status}）`);
 
         const fill = data.data || {};
-        const form = document.getElementById("inviteForm");
 
-        // fill copy
-        if (fill.cover_subtitle) form.cover_subtitle.value = fill.cover_subtitle;
-        if (fill.story_subtitle) form.story_subtitle.value = fill.story_subtitle;
-        if (fill.story_p1) form.story_p1.value = fill.story_p1;
-        if (fill.story_p2) form.story_p2.value = fill.story_p2;
+        // 填到表單（有值才覆蓋）
+        const form = document.getElementById('inviteForm');
+        const setIf = (name, v) => {
+          if(v === undefined || v === null) return;
+          const s = String(v).trim();
+          if(!s) return;
+          if(form[name]) form[name].value = s;
+        };
 
-        // optionally fill basics if backend sends them
-        if (fill.page_title) form.page_title.value = fill.page_title;
-        if (fill.couple_title) form.couple_title.value = fill.couple_title;
-        if (fill.wedding_date_text) form.wedding_date_text.value = fill.wedding_date_text;
-        if (fill.wedding_time_text) form.wedding_time_text.value = fill.wedding_time_text;
-        if (fill.venue_name) form.venue_name.value = fill.venue_name;
-        if (fill.venue_address) form.venue_address.value = fill.venue_address;
-        if (fill.map_url) form.map_url.value = fill.map_url;
-        if (fill.rsvp_url) form.rsvp_url.value = fill.rsvp_url;
+        setIf('cover_subtitle', fill.cover_subtitle);
+        setIf('story_subtitle', fill.story_subtitle);
+        setIf('story_p1', fill.story_p1);
+        setIf('story_p2', fill.story_p2);
+
+        // 你也允許 AI 生成基本欄位（有值才覆蓋）
+        setIf('page_title', fill.page_title);
+        setIf('couple_title', fill.couple_title);
+        setIf('wedding_date_text', fill.wedding_date_text);
+        setIf('wedding_time_text', fill.wedding_time_text);
+        setIf('venue_name', fill.venue_name);
+        setIf('venue_address', fill.venue_address);
+        setIf('map_url', fill.map_url);
+        setIf('rsvp_url', fill.rsvp_url);
 
         // timeline
-        if (fill.tl1_time) form.tl1_time.value = fill.tl1_time;
-        if (fill.tl1_text) form.tl1_text.value = fill.tl1_text;
-        if (fill.tl2_time) form.tl2_time.value = fill.tl2_time;
-        if (fill.tl2_text) form.tl2_text.value = fill.tl2_text;
-        if (fill.tl3_time) form.tl3_time.value = fill.tl3_time;
-        if (fill.tl3_text) form.tl3_text.value = fill.tl3_text;
+        setIf('tl1_time', fill.tl1_time);
+        setIf('tl1_text', fill.tl1_text);
+        setIf('tl2_time', fill.tl2_time);
+        setIf('tl2_text', fill.tl2_text);
+        setIf('tl3_time', fill.tl3_time);
+        setIf('tl3_text', fill.tl3_text);
 
-        // statuses
-        els.aiStatus.className = "status ok";
-        els.aiStatus.textContent = t.okFilled;
+        hideOverlay();
+        showPage('form');
 
-        els.genStatus.className = "status ok";
-        els.genStatus.textContent = t.okFilled;
+        // 小提示：若 AI 沒填 timeline，給你一個不打擾的提醒
+        const statusEl = document.getElementById('status');
+        statusEl.className = 'status ok';
+        statusEl.textContent = '✅ AI 已填入文案，你可以再微調後上傳照片生成喜帖。';
 
-        els.genCloseBtn.disabled = false;
-        els.genCloseBtn.textContent = t.overlayDone;
       }catch(err){
-        els.aiStatus.className = "status error";
-        els.aiStatus.textContent = t.fail + err.message;
-
-        els.genStatus.className = "status error";
-        els.genStatus.textContent = t.overlayFail + err.message;
-
-        els.genCloseBtn.disabled = false;
-        els.genCloseBtn.textContent = "Close";
+        hideOverlay();
+        setQStatus('qStatus3', '❌ ' + err.message, false);
       }
-    });
+    }
 
-    /* =========================
-       Existing form submit (/api/create)
-    ========================== */
+    document.getElementById('genToFormBtn').addEventListener('click', aiPrefillAndGoForm);
+
+    /***********************
+     * Form demo fill
+     ***********************/
     const form = document.getElementById('inviteForm');
-    const statusEl = document.getElementById('status');
-    const fillDemoBtn = document.getElementById('fillDemo');
-
-    fillDemoBtn.addEventListener('click', () => {
+    document.getElementById('fillDemo').addEventListener('click', () => {
       form.page_title.value = 'Chun-Wei & Yerim｜婚禮喜帖';
       form.couple_title.value = 'Chun-Wei & Yerim';
       form.wedding_date_text.value = '2027 / 01 / 16 (六)';
@@ -1088,6 +1305,22 @@
       form.tl3_text.value = '晚宴、致詞與互動時間';
     });
 
+    /***********************
+     * Photo count guard (exactly 4)
+     ***********************/
+    const photoInput = document.querySelector('input[name="photos"]');
+    photoInput.addEventListener('change', () => {
+      if (photoInput.files.length !== 4) {
+        alert(i18n[currentLang].alerts.need4Photos);
+        photoInput.value = "";
+      }
+    });
+
+    /***********************
+     * Submit: POST /api/create (multipart/form-data)
+     ***********************/
+    const statusEl = document.getElementById('status');
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       statusEl.textContent = '正在上傳與生成中…';
@@ -1098,7 +1331,7 @@
       try {
         const res = await fetch('/api/create', { method: 'POST', body: fd });
 
-        // read text first (avoid JSON crash)
+        // 先讀 text，避免不是 JSON 就炸
         const text = await res.text();
         console.log('status:', res.status);
         console.log('response text:', text);
@@ -1107,9 +1340,12 @@
           throw new Error(`伺服器回應失敗：${res.status}\n${text.slice(0, 200)}`);
         }
 
-        const data = JSON.parse(text);
+        // 再轉 JSON
+        let data;
+        try { data = JSON.parse(text); }
+        catch { throw new Error(`伺服器回傳不是 JSON：${text.slice(0,200)}`); }
 
-        statusEl.innerHTML = `✅ 已生成：<a href="${data.url}" target="_blank" style="color:inherit;text-decoration:underline">${data.url}</a>`;
+        statusEl.innerHTML = `✅ 已生成：<a href="${data.url}" target="_blank" style="text-decoration:underline">${data.url}</a>`;
         statusEl.classList.add('ok');
       } catch (err) {
         statusEl.textContent = '❌ 生成失敗：' + err.message;
@@ -1117,17 +1353,9 @@
       }
     });
 
-    // photo validation: exactly 4
-    const photoInput = document.querySelector('input[name="photos"]');
-    photoInput.addEventListener('change', () => {
-      if (photoInput.files.length !== 4) {
-        alert("請一次選取「剛好 4 張」照片，會依順序套用。");
-        photoInput.value = "";
-      }
-    });
-
     // init
-    applyLang("zh");
+    applyLang('zh');
+    setTimeout(() => document.getElementById('ai_q1').focus(), 200);
   </script>
 </body>
 </html>
