@@ -347,7 +347,7 @@
       color: rgba(255,255,255,0.78);
       line-height: 1.7;
       min-height: 50px;
-      transition: opacity .22s ease;
+      transition: opacity .38s ease;
     }
     .gen-sub{
       margin-top: 12px;
@@ -925,42 +925,137 @@
     };
 
     let currentLang = 'zh';
+    const on = (id, evt, fn) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener(evt, fn);
+   };
+
+  const setText = (id, text) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = text;
+   };
+
+  const setHTML = (id, html) => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = html;
+    };
+
+  const setPh = (id, ph) => {
+    const el = document.getElementById(id);
+    if (el) el.placeholder = ph;
+    };
+
 
     function applyLang(lang){
-      currentLang = lang;
-      const t = i18n[lang];
+    currentLang = lang;
+    const t = i18n[lang] || i18n.zh;
 
-      // safe setter（避免抓不到元素就整支 script 爆掉）
-        const setText = (id, text) => {
-          const el = document.getElementById(id);
-          if (el) el.textContent = text;
-        };
+    // title / header
+    setText('docTitle', t.docTitle);
+    document.title = t.docTitle;
+    setText('h1Title', t.h1);
+    setHTML('subTitle', t.sub);
+    setText('mvpTag', t.mvpTag);
 
-        // buttons
-        setText('toQ2Btn', t.btnNext);
-        setText('toQ3Btn', t.btnNext);
-        setText('backToQ1Btn', t.btnPrev);
-        setText('backToQ2Btn', t.btnPrev);
+    // tags / steps
+    setText('qaTag', t.qaTag);
+    setText('qaTag2', t.qaTag);
+    setText('qaTag3', t.qaTag);
+    setText('step1', t.step1);
+    setText('step2', t.step2);
+    setText('step3', t.step3);
 
-        setText('clearAllBtn1', t.btnClear);
-        setText('clearAllBtn2', t.btnClear);
-        setText('clearAllBtn3', t.btnClear);
+    // Q1~Q3
+    setText('q1Label', t.q1);
+    setPh('ai_q1', t.q1ph);
+    setText('q1Hint', t.q1hint);
 
-        setText('genToFormBtn', t.btnGenToForm);
+    setText('q2Label', t.q2);
+    setPh('ai_q2', t.q2ph);
+    setText('q2Hint', t.q2hint);
 
-        // form buttons
-        setText('submitBtn', t.submitBtn);
-        setText('fillDemo', t.demoBtn);
-        setText('backToQ3FromForm', t.backToQA);
+    setText('q3Label', t.q3);
+    setPh('ai_q3', t.q3ph);
+    setText('styleLabel', t.styleLabel);
+    setPh('ai_style', t.stylePh);
+    setText('styleHint', t.styleHint);
 
+    // buttons（Q pages）
+    setText('toQ2Btn', t.btnNext);
+    setText('toQ3Btn', t.btnNext);
+    setText('backToQ1Btn', t.btnPrev);
+    setText('backToQ2Btn', t.btnPrev);
+
+    setText('clearAllBtn1', t.btnClear);
+    setText('clearAllBtn2', t.btnClear);
+    setText('clearAllBtn3', t.btnClear);
+
+    setText('genToFormBtn', t.btnGenToForm);
+
+    // overlay
+    setText('genTitle', t.genTitle);
+    setText('genSub', t.genSub);
+
+    // form section titles/labels
+    setText('formTitle', t.formTitle);
+    setText('formTag', t.formTag);
+
+    setText('lblCoupleTitle', t.lblCoupleTitle);
+    setText('hintCoupleTitle', t.hintCoupleTitle);
+    setText('lblPageTitle', t.lblPageTitle);
+    setText('lblDate', t.lblDate);
+    setText('lblTime', t.lblTime);
+    setText('lblVenueName', t.lblVenueName);
+    setText('lblVenueAddr', t.lblVenueAddr);
+    setText('lblMap', t.lblMap);
+    setText('lblRsvp', t.lblRsvp);
+
+    setText('copyTitle', t.copyTitle);
+    setText('copyTag', t.copyTag);
+    setText('lblCoverSub', t.lblCoverSub);
+    setText('lblStorySub', t.lblStorySub);
+    setText('lblStoryP1', t.lblStoryP1);
+    setText('lblStoryP2', t.lblStoryP2);
+
+    setText('tlTitle', t.tlTitle);
+    setText('tlTag', t.tlTag);
+    setText('lblTl1Time', t.lblTl1Time);
+    setText('lblTl1Text', t.lblTl1Text);
+    setText('lblTl2Time', t.lblTl2Time);
+    setText('lblTl2Text', t.lblTl2Text);
+    setText('lblTl3Time', t.lblTl3Time);
+    setText('lblTl3Text', t.lblTl3Text);
+
+    setText('photoTitle', t.photoTitle);
+    setText('photoTag', t.photoTag);
+    setText('photoName', t.photoName);
+
+    // form buttons
+    setText('submitBtn', t.submitBtn);
+    setText('fillDemo', t.demoBtn);
+    setText('backToQ3FromForm', t.backToQA);
+
+    // ✅ 可選：切語言時也同步更新「目前 demo 可能寫死的 placeholder」
+    // 你現在表單 input/textarea 的 placeholder 是 HTML 寫死中文，
+    // 若你希望也跟著換，建議改成用 JS 設 placeholder（如下例幾個重要欄位）
+    setPh('couple_title', (lang==='zh') ? '例：Chun-Wei & Yerim' :
+                     (lang==='en') ? 'e.g., Alex & Jamie' :
+                     (lang==='ko') ? '예: 민수 & 지수' : 'Ví dụ: An & Bình');
+
+    setPh('page_title', (lang==='zh') ? '例：Chun-Wei & Yerim｜婚禮喜帖' :
+                    (lang==='en') ? 'e.g., Alex & Jamie | Wedding Invitation' :
+                    (lang==='ko') ? '예: 민수 & 지수｜모바일 청첩장' : 'Ví dụ: An & Bình | Thiệp cưới');
+
+    // 其他欄位你要全做也可以，用同樣方式追加 setPh(...)
     }
 
     // language button event
     document.querySelectorAll('.langbtn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.langbtn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        applyLang(btn.dataset.lang);
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.langbtn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      applyLang(btn.dataset.lang);
       });
     });
 
@@ -968,31 +1063,28 @@
      * Page transitions (fade out/in)
      ***********************/
     const pages = {
-      q1: document.getElementById('page-q1'),
-      q2: document.getElementById('page-q2'),
-      q3: document.getElementById('page-q3'),
-      form: document.getElementById('page-form'),
+    q1: document.getElementById('page-q1'),
+    q2: document.getElementById('page-q2'),
+    q3: document.getElementById('page-q3'),
+    form: document.getElementById('page-form'),
     };
 
     function showPage(key){
-      const target = pages[key];
-      if(!target) return;
+    const target = pages[key];
+    if(!target) return;
 
-      const current = document.querySelector('.page.active');
-      if(current === target) return;
+    const current = document.querySelector('.page.active');
+    if(current === target) return;
 
-      // fade out current
-      if(current){
-        current.classList.remove('visible');
-        setTimeout(() => {
-          current.classList.remove('active');
-          // activate target
-          target.classList.add('active');
-          // force reflow for transition
-          void target.offsetWidth;
-          target.classList.add('visible');
-          window.scrollTo({ top: 0, behavior: 'instant' });
-        }, 320);
+    if(current){
+      current.classList.remove('visible');
+      setTimeout(() => {
+        current.classList.remove('active');
+        target.classList.add('active');
+        void target.offsetWidth;
+        target.classList.add('visible');
+        window.scrollTo({ top: 0, behavior: 'instant' });
+      }, 320);
       }else{
         target.classList.add('active');
         void target.offsetWidth;
@@ -1004,12 +1096,18 @@
      * Clear + simple validation
      ***********************/
     function clearAll(){
-      document.getElementById('ai_q1').value = '';
-      document.getElementById('ai_q2').value = '';
-      document.getElementById('ai_q3').value = '';
-      document.getElementById('ai_style').value = '';
+    const q1 = document.getElementById('ai_q1');
+    const q2 = document.getElementById('ai_q2');
+    const q3 = document.getElementById('ai_q3');
+    const st = document.getElementById('ai_style');
+    if(q1) q1.value = '';
+    if(q2) q2.value = '';
+    if(q3) q3.value = '';
+    if(st) st.value = '';
+
       ['qStatus1','qStatus2','qStatus3'].forEach(id => {
         const el = document.getElementById(id);
+        if(!el) return;
         el.textContent = '';
         el.className = 'status';
       });
@@ -1019,38 +1117,36 @@
     document.getElementById('backToQ3FromForm').addEventListener('click', () => showPage('q3'));
 
 
-    function setQStatus(pageId, msg, ok=false){
-      const el = document.getElementById(pageId);
-      el.textContent = msg || '';
-      el.className = 'status ' + (ok ? 'ok' : (msg ? 'error' : ''));
+     function setQStatus(pageId, msg, ok=false){
+    const el = document.getElementById(pageId);
+    if(!el) return;
+    el.textContent = msg || '';
+    el.className = 'status ' + (ok ? 'ok' : (msg ? 'error' : ''));
     }
 
     /***********************
      * Nav buttons
      ***********************/
-    document.getElementById('toQ2Btn').addEventListener('click', () => {
-      const a1 = document.getElementById('ai_q1').value.trim();
-      if(!a1) return setQStatus('qStatus1', i18n[currentLang].alerts.needQ1, false);
-      setQStatus('qStatus1', '', true);
-      showPage('q2');
-      setTimeout(() => document.getElementById('ai_q2').focus(), 380);
-    });
+    on('toQ2Btn', 'click', () => {
+    const a1 = (document.getElementById('ai_q1')?.value || '').trim();
+    if(!a1) return setQStatus('qStatus1', i18n[currentLang].alerts.needQ1, false);
+    setQStatus('qStatus1', '', true);
+    showPage('q2');
+    setTimeout(() => document.getElementById('ai_q2')?.focus(), 380);
+  });
 
-    document.getElementById('backToQ1Btn').addEventListener('click', () => showPage('q1'));
+  on('backToQ1Btn', 'click', () => showPage('q1'));
 
-    document.getElementById('toQ3Btn').addEventListener('click', () => {
-      const a2 = document.getElementById('ai_q2').value.trim();
-      if(!a2) return setQStatus('qStatus2', i18n[currentLang].alerts.needQ2, false);
-      setQStatus('qStatus2', '', true);
-      showPage('q3');
-      setTimeout(() => document.getElementById('ai_q3').focus(), 380);
-    });
+  on('toQ3Btn', 'click', () => {
+    const a2 = (document.getElementById('ai_q2')?.value || '').trim();
+    if(!a2) return setQStatus('qStatus2', i18n[currentLang].alerts.needQ2, false);
+    setQStatus('qStatus2', '', true);
+    showPage('q3');
+    setTimeout(() => document.getElementById('ai_q3')?.focus(), 380);
+  });
 
-    document.getElementById('backToQ2Btn').addEventListener('click', () => showPage('q2'));
-
-    //document.getElementById('backToQ3Btn').addEventListener('click', () => showPage('q3'));
-
-    document.getElementById('backToQ3FromForm').addEventListener('click', () => showPage('q3'));
+  on('backToQ2Btn', 'click', () => showPage('q2'));
+  on('backToQ3FromForm', 'click', () => showPage('q3'));
 
     /***********************
      * Generating overlay: random short lines
@@ -1060,34 +1156,47 @@
 
     const randomLines = {
       zh: [
-        '把你們的回答變得更像喜帖的語氣。',
-        '整理成「短句 + 故事段落」的節奏。',
-        '幫你抓出最甜的那一句。',
-        '把細節留著、把情緒放大一點點。',
-        '讓每一段都更像“你們”。',
+        '把你們說過的話，慢慢折成一封喜帖。',
+        '將片段的回答，排成剛好的節奏。',
+        '在所有句子裡，悄悄留下最甜的那一句。',
+        '讓細節先停留，情緒再多一點空間。',
+        '不急著完成，先讓故事成形。',
+        '把日常的語言，換成只屬於這一天的文字。',
+        '讓每一段話，都有你們的影子。',
+        '文字正在靠近，你們真正的樣子。',
       ],
       en: [
-        'Turning your answers into invitation-style copy.',
-        'Shaping a warm, concise rhythm.',
-        'Finding the sweetest detail to highlight.',
-        'Keeping it classy—no cringe, no brag.',
-        'Making it sound like you.',
+        'Folding your words into a wedding invitation.',
+        'Arranging fragments into a gentle rhythm.',
+        'Quietly keeping the sweetest line.',
+        'Letting details linger, emotions breathe.',
+        'Taking our time to shape the story.',
+        'Turning everyday words into something timeless.',
+        'Letting every line sound like you.',
+        'Bringing the words closer to who you are.',
       ],
       ko: [
-        '답변을 청첩장 문구로 자연스럽게 다듬는 중…',
-        '짧은 문장 + 스토리 흐름으로 정리 중…',
-        '가장 설레는 포인트를 뽑는 중…',
-        '과하지 않게, 우아하게.',
-        '두 분만의 톤으로 맞추는 중…',
+        '두 분의 말을 천천히 청첩장으로 엮는 중…',
+        '조각난 답변을 부드러운 흐름으로 정리하는 중…',
+        '가장 달콤한 한 문장을 남기는 중…',
+        '디테일은 잠시 머물고, 감정은 조금 더.',
+        '서두르지 않고 이야기를 빚는 중…',
+        '일상의 언어를 특별한 날의 문장으로.',
+        '한 줄 한 줄, 두 분다워지는 중…',
+        '문장이 두 분에게 점점 가까워지고 있어요.',
       ],
       vi: [
-        'Đang chuyển câu trả lời thành văn phong thiệp mời…',
-        'Sắp xếp nhịp: câu ngắn + câu chuyện…',
-        'Chọn ra chi tiết dễ thương nhất…',
-        'Thanh lịch, vừa đủ, không phô trương.',
-        'Đưa về đúng “giọng” của hai bạn.',
+        'Đang nhẹ nhàng ghép lời của hai bạn thành thiệp cưới…',
+        'Sắp xếp từng mảnh câu chữ theo nhịp dịu dàng…',
+        'Giữ lại câu ngọt ngào nhất…',
+        'Để chi tiết ở lại, cho cảm xúc thêm không gian.',
+        'Không vội vàng, đang dệt nên câu chuyện.',
+        'Biến lời thường ngày thành khoảnh khắc đáng nhớ.',
+        'Mỗi dòng chữ mang dáng hình của hai bạn.',
+        'Câu chữ đang tiến gần hơn đến chính hai bạn.',
       ],
     };
+
 
     function showOverlay(){
       overlay.classList.add('show');
@@ -1105,7 +1214,7 @@
       };
 
       tick();
-      const timer = setInterval(tick, 950);
+      const timer = setInterval(tick, 1800);
 
       return () => {
         alive = false;
@@ -1198,29 +1307,99 @@
     /***********************
      * Form demo fill
      ***********************/
-    const form = document.getElementById('inviteForm');
-    document.getElementById('fillDemo').addEventListener('click', () => {
-      form.page_title.value = 'Chun-Wei & Yerim｜婚禮喜帖';
-      form.couple_title.value = 'Chun-Wei & Yerim';
-      form.wedding_date_text.value = '2027 / 01 / 16 (六)';
-      form.wedding_time_text.value = '入場 18:00，儀式 18:30';
-      form.venue_name.value = '首爾君悅酒店';
-      form.venue_address.value = '韓國 首爾特別市 龍산구 소월로 322 (한남동) 04347';
-      form.map_url.value = 'https://www.google.com/maps/search/?api=1&query=Grand%20Hyatt%20Seoul';
-      form.rsvp_url.value = 'https://docs.google.com/forms';
+    const demoByLang = {
+    zh: {
+      page_title: 'Chun-Wei & Yerim｜婚禮喜帖',
+      couple_title: 'Chun-Wei & Yerim',
+      wedding_date_text: '2027 / 01 / 16 (六)',
+      wedding_time_text: '入場 18:00，儀式 18:30',
+      venue_name: '首爾君悅酒店',
+      venue_address: '韓國 首爾特別市 龍산구 소월로 322 (한남동) 04347',
+      map_url: 'https://www.google.com/maps/search/?api=1&query=Grand%20Hyatt%20Seoul',
+      rsvp_url: 'https://docs.google.com/forms',
 
-      form.cover_subtitle.value = '誠摯邀請您，一起見證我們步入新的旅程。';
-      form.story_subtitle.value = '跨越台南與首爾的日常，慢慢疊起來，就變成了今天的我們。';
-      form.story_p1.value = '從一通訊息、一張機票開始，我們學會在不同的城市裡替彼此保留一個位置，期待著下一次重逢。';
-      form.story_p2.value = '現在，我們想邀請你／妳，一起來到這一天，見證我們把這段旅程，變成同一個「家」。';
+      cover_subtitle: '誠摯邀請您，一起見證我們步入新的旅程。',
+      story_subtitle: '跨越台南與首爾的日常，慢慢疊起來，就變成了今天的我們。',
+      story_p1: '從一通訊息、一張機票開始，我們學會在不同的城市裡替彼此保留一個位置，期待著下一次重逢。',
+      story_p2: '現在，我們想邀請你／妳，一起來到這一天，見證我們把這段旅程，變成同一個「家」。',
 
-      form.tl1_time.value = '18:00';
-      form.tl1_text.value = '賓客入場、簡單合照';
-      form.tl2_time.value = '18:30';
-      form.tl2_text.value = '證婚儀式開始';
-      form.tl3_time.value = '19:30';
-      form.tl3_text.value = '晚宴、致詞與互動時間';
+      tl1_time: '18:00', tl1_text: '賓客入場、簡單合照',
+      tl2_time: '18:30', tl2_text: '證婚儀式開始',
+      tl3_time: '19:30', tl3_text: '晚宴、致詞與互動時間',
+    },
+
+    en: {
+      page_title: 'Alex & Jamie | Wedding Invitation',
+      couple_title: 'Alex & Jamie',
+      wedding_date_text: 'Sat, Jun 20, 2026',
+      wedding_time_text: 'Guests 5:00 PM · Ceremony 5:30 PM',
+      venue_name: 'The Foundry Loft',
+      venue_address: '123 W 26th St, New York, NY 10001, USA',
+      map_url: 'https://www.google.com/maps/search/?api=1&query=123%20W%2026th%20St%20New%20York%20NY%2010001',
+      rsvp_url: 'https://forms.gle/example',
+
+      cover_subtitle: 'We’d love for you to join us for a simple, happy day.',
+      story_subtitle: 'A few small moments that quietly became a lifetime.',
+      story_p1: 'It started with a late-night text and a coffee that turned into hours. We learned each other’s routines, then made room for them.',
+      story_p2: 'Now we’re inviting you to be there—when “us” becomes “home,” and the next chapter finally begins.',
+
+      tl1_time: '17:00', tl1_text: 'Doors open · welcome drinks',
+      tl2_time: '17:30', tl2_text: 'Ceremony',
+      tl3_time: '18:30', tl3_text: 'Dinner · toasts · celebration',
+    },
+
+    ko: {
+      page_title: '민수 & 지수｜모바일 청첩장',
+      couple_title: '민수 & 지수',
+      wedding_date_text: '2026년 10월 3일 (토)',
+      wedding_time_text: '입장 16:30 · 예식 17:00',
+      venue_name: '더채플앳청담',
+      venue_address: '서울 강남구 선릉로 757 (청담동)',
+      map_url: 'https://www.google.com/maps/search/?api=1&query=더채플앳청담',
+      rsvp_url: 'https://forms.gle/example',
+
+      cover_subtitle: '조용히, 그리고 단단히—우리의 하루에 함께해 주세요.',
+      story_subtitle: '평범한 날들의 합이, 오늘의 우리를 만들었습니다.',
+      story_p1: '처음엔 사소한 인사였는데, 어느 순간 가장 편한 사람이 되었어요. 서로의 리듬을 맞추는 시간이 쌓였습니다.',
+      story_p2: '이제 그 시간을 “약속”으로 묶으려 해요. 그 자리에 여러분이 계시면 더 따뜻할 것 같아요.',
+
+      tl1_time: '16:30', tl1_text: '하객 입장 · 포토타임',
+      tl2_time: '17:00', tl2_text: '예식 시작',
+      tl3_time: '18:00', tl3_text: '피로연 · 축하인사',
+    },
+
+    vi: {
+      page_title: 'An & Bình | Thiệp cưới',
+      couple_title: 'An & Bình',
+      wedding_date_text: 'Thứ Bảy, 12/09/2026',
+      wedding_time_text: 'Đón khách 17:30 · Lễ 18:00',
+      venue_name: 'Riverside Garden',
+      venue_address: '12 Nguyễn Huệ, Quận 1, TP. Hồ Chí Minh',
+      map_url: 'https://www.google.com/maps/search/?api=1&query=12%20Nguyễn%20Huệ%20Quận%201',
+      rsvp_url: 'https://forms.gle/example',
+
+      cover_subtitle: 'Mời bạn đến chung vui cùng tụi mình trong ngày đặc biệt này.',
+      story_subtitle: 'Từ những điều nhỏ, tụi mình chọn nhau mỗi ngày.',
+      story_p1: 'Có những buổi hẹn đơn giản, rồi thành thói quen. Tụi mình học cách chăm nhau bằng những việc rất nhỏ.',
+      story_p2: 'Và giờ, tụi mình muốn mời bạn đến—để chứng kiến khoảnh khắc “từ nay” bắt đầu.',
+
+      tl1_time: '17:30', tl1_text: 'Đón khách · chụp hình',
+      tl2_time: '18:00', tl2_text: 'Nghi lễ',
+      tl3_time: '19:00', tl3_text: 'Tiệc · phát biểu · chúc mừng',
+    },
+  };
+
+  const form = document.getElementById('inviteForm');
+  on('fillDemo', 'click', () => {
+    if(!form) return;
+    const d = demoByLang[currentLang] || demoByLang.zh;
+
+    // 只填你表單有的欄位
+    Object.entries(d).forEach(([k,v]) => {
+      const el = form.querySelector(`[name="${k}"]`) || form[k];
+      if(el) el.value = v;
     });
+  });
 
     /***********************
      * Photo count guard (exactly 4)
