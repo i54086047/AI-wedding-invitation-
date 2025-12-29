@@ -1186,95 +1186,81 @@
     /***********************
      * AI prefill (POST /api/ai_prefill) then go to form page
      ***********************/
-    async function aiPrefillAndGoForm(){
-      const a1 = document.getElementById('ai_q1').value.trim();
-      const a2 = document.getElementById('ai_q2').value.trim();
-      const a3 = document.getElementById('ai_q3').value.trim();
-      const style = document.getElementById('ai_style').value.trim();
+    
+      async function aiPrefillAndGoForm(){
+        const a1 = ai_q1.value.trim();
+        const a2 = ai_q2.value.trim();
+        const a3 = ai_q3.value.trim();
+        const style = ai_style.value.trim();
 
-      if(!a1) return setQStatus('qStatus1', i18n[currentLang].alerts.needQ1, false);
-      if(!a2) return setQStatus('qStatus2', i18n[currentLang].alerts.needQ2, false);
-      if(!a3) return setQStatus('qStatus3', i18n[currentLang].alerts.needQ3, false);
+        if(!a1) return setQStatus('qStatus1', i18n[currentLang].alerts.needQ1);
+        if(!a2) return setQStatus('qStatus2', i18n[currentLang].alerts.needQ2);
+        if(!a3) return setQStatus('qStatus3', i18n[currentLang].alerts.needQ3);
 
-      setQStatus('qStatus3', '', true);
+        const stopOverlay = showOverlay();
 
-      const hideOverlay = showOverlay();
+        try{
+          const res = await fetch('/api/ai_prefill', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              answers: [
+                { q: 'story', a: a1 },
+                { q: 'detail', a: a2 },
+                { q: 'wedding', a: a3 },
+                { q: 'style', a: style }   // ★ 真的送進去
+              ]
+            })
+          });
 
-      const payload = {
-        // 你後端原本吃 answers[]，我維持相容
-        answers: [
-          { q: 'Q1', a: a1 },
-          { q: 'Q2', a: a2 },
-          { q: 'Q3', a: a3 },
-          { q: 'tone', a: style },
-          { q: 'language', a: currentLang }, // 讓後端知道語言 zh/en/ko/vi
-        ]
-      };
+          const text = await res.text();     // ★ 不直接 res.json()
+          let json;
+          try{
+            json = JSON.parse(text);
+          }catch{
+            throw new Error('AI 回傳非 JSON');
+          }
 
-      try{
-        const res = await fetch('/api/ai_prefill', {
-          method: 'POST',
-          headers: {'Content-Type':'application/json'},
-          body: JSON.stringify(payload)
-        });
+          if(!json.ok) throw new Error(json.error || 'AI 失敗');
 
-        // 先讀 text，避免後端回 HTML 直接炸
-        const text = await res.text();
-        let data;
-        try { data = JSON.parse(text); }
-        catch {
-          throw new Error(`AI 回傳不是 JSON（HTTP ${res.status}）：${text.slice(0, 200)}`);
+          applyAIPrefill(json.data);
+          showPage('form');
+
+        }catch(err){
+          alert(err.message);
+        }finally{
+          stopOverlay();
         }
-
-        if(!res.ok || !data.ok) throw new Error(data?.error || `AI 失敗（HTTP ${res.status}）`);
-
-        const fill = data.data || {};
-
-        // 填到表單（有值才覆蓋）
-        const form = document.getElementById('inviteForm');
-        const setIf = (name, v) => {
-          if(v === undefined || v === null) return;
-          const s = String(v).trim();
-          if(!s) return;
-          if(form[name]) form[name].value = s;
-        };
-
-        setIf('cover_subtitle', fill.cover_subtitle);
-        setIf('story_subtitle', fill.story_subtitle);
-        setIf('story_p1', fill.story_p1);
-        setIf('story_p2', fill.story_p2);
-
-        // 你也允許 AI 生成基本欄位（有值才覆蓋）
-        setIf('page_title', fill.page_title);
-        setIf('couple_title', fill.couple_title);
-        setIf('wedding_date_text', fill.wedding_date_text);
-        setIf('wedding_time_text', fill.wedding_time_text);
-        setIf('venue_name', fill.venue_name);
-        setIf('venue_address', fill.venue_address);
-        setIf('map_url', fill.map_url);
-        setIf('rsvp_url', fill.rsvp_url);
-
-        // timeline
-        setIf('tl1_time', fill.tl1_time);
-        setIf('tl1_text', fill.tl1_text);
-        setIf('tl2_time', fill.tl2_time);
-        setIf('tl2_text', fill.tl2_text);
-        setIf('tl3_time', fill.tl3_time);
-        setIf('tl3_text', fill.tl3_text);
-
-        hideOverlay();
-        showPage('form');
-
-        // 小提示：若 AI 沒填 timeline，給你一個不打擾的提醒
-        const statusEl = document.getElementById('status');
-        statusEl.className = 'status ok';
-        statusEl.textContent = '✅ AI 已填入文案，你可以再微調後上傳照片生成喜帖。';
-
-      }catch(err){
-        hideOverlay();
-        setQStatus('qStatus3', '❌ ' + err.message, false);
       }
+      function applyAIPrefill(data){
+  const MAP = [
+    'page_title',
+    'couple_title',
+    'cover_subtitle',
+    'wedding_date_text',
+    'wedding_time_text',
+    'venue_name',
+    'venue_address',
+    'map_url',
+    'rsvp_url',
+    'story_subtitle',
+    'story_p1',
+    'story_p2',
+    'tl1_time','tl1_text',
+    'tl2_time','tl2_text',
+    'tl3_time','tl3_text'
+  ];
+
+  MAP.forEach(key => {
+    const el = document.querySelector(`[name="${key}"]`);
+    if(el && typeof data[key] === 'string' && data[key] !== ''){
+      el.value = data[key];
     }
+  });
+}
+
+
+
 
     document.getElementById('genToFormBtn').addEventListener('click', aiPrefillAndGoForm);
 
